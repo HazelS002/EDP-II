@@ -1,0 +1,505 @@
+\documentclass[12pt]{article}
+
+\usepackage{latexsym}
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc} 
+\usepackage[spanish]{babel}
+\usepackage{amsthm, amssymb, amsmath, amsfonts, bbm, mathtools} 
+\usepackage{multirow, array}
+\usepackage{stmaryrd}
+\usepackage{xcolor}
+\decimalpoint
+
+\usepackage{wrapfig}
+\usepackage{subcaption}
+
+% no tocar nada de aqui
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumerate} 
+\usepackage{graphicx}
+
+% entornos personalizados
+\newtheorem{example}{Ejemplo}
+\newtheorem{notacion}{Notación}
+\newtheorem{defi}{Definición}
+\newtheorem{obse}{Observación}
+\newtheorem{lem}{Lema}
+
+\newcommand{\sol}{\textit{Solución. }}
+\renewcommand{\qed}{\hfill $\blacksquare$}
+\newcommand{\eej}{\hfill $\square$}
+
+%--------------------- Comandos personalizados ---------------------
+
+% Simbolos de los Numeros
+\newcommand{\D}{\mathfrak{D}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Signos de agrupacion
+\newcommand{\pp}[1]{\left( #1 \right)}
+\newcommand{\cc}[1]{\left[ #1 \right]}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\ind}[1]{\mathbbm{1}_{\{#1\}}}
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+
+\newcommand{\Text}[1]{\quad\text{#1}\quad}
+
+\newcommand{\bs}{\backslash}
+\renewcommand{\c}{\complement}
+\newcommand{\beq}{bilipschitz }
+
+% Flechas
+\newcommand{\imp}{\Longrightarrow}
+\newcommand{\Imp}{\quad\Longrightarrow\quad}
+\newcommand{\ssi}{\Longleftrightarrow}
+\newcommand{\Ssi}{\quad\Longleftrightarrow\quad}
+
+
+\newcommand{\e}{\varepsilon}
+\renewcommand{\d}{\delta}
+\renewcommand{\O}{\Omega}
+\renewcommand{\l}{\lambda}
+\renewcommand{\a}{\alpha}
+\renewcommand{\b}{\beta}
+\renewcommand{\abs}[1]{\left\lvert#1\right\rvert}
+%\renewcommand{\qedsymbol}{$\blacksquare$}
+
+
+\newcommand{\Co}{\mathfrak C}
+\newcommand{\T}{\mathbb T}
+%\newcommand{\uno}{\mathbb 1}
+%\newcommand{\ind}[1]{\mathbbm{1}_{\{#1\}}}
+\newcommand{\uno}{\mathbbm{1}}
+
+
+\renewcommand{\o}{\omega}
+
+\newcommand{\x}{\mathrm x}
+\newcommand{\y}{\mathrm y}
+\newcommand{\Int}{\mathrm{int}}
+\newcommand{\Ext}{\mathrm{ext}}
+\newcommand{\diam}{\mathrm{diam}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\angles}[2]{\left\langle #1, #2\right\rangle}
+
+\textheight=25cm \textwidth=18cm \topmargin=-2cm \oddsidemargin=-1cm
+
+\setlength{\parskip}{0.8em}  % Espaciado párrafos
+\setlength{\parindent}{0pt}  % Sangría
+
+\newcommand{\To}{\to}
+
+
+
+\begin{document}
+    \pagestyle{empty}
+    \begin{center}
+        {\textsc{Ecuaciones Diferenciales Parciales II} \\
+        \medskip 
+        \large{Tarea 1}}
+    \end{center}
+    
+    \bigskip
+    
+    \begin{enumerate}
+        \item Resolver las siguientes PDE's relacionadas a la ecuación de calor.
+
+        \begin{enumerate}
+            \item \[
+            \begin{cases}
+                2u_{xx} &= u_t,\quad0<x<4,~t>0,\\
+                u(0,t) &= 0,\\
+                u(4,t) &= 0,\\
+                u(x,0) &= \begin{cases}
+                    x,\quad   &0<x<2,\\
+                    4-x,\quad &2<x<4.
+                \end{cases}
+            \end{cases}
+            \]
+
+            \sol Por el método de separación de variables supongamos que la solución $u$ de la ecuación se puedo factorizar de la forma $u(x,t)=v(x) w(t)$ con $v,w\neq0$. Entonces, tenemos que
+            \[
+            \begin{cases}
+                u(0,t) =0 \Ssi v(0) w(t) =0 \Ssi  v(0)=0,\\
+                u(4,t) =0 \Ssi v(4) w(t) =0 \Ssi v(4) = 0.
+            \end{cases}
+            \]
+            Por otro lado, como $u(x,t)=v(x) w(t)$, entonces
+            \[ 2u_{xx} = u_t \Ssi 2v_{xx}w = vw_t\Ssi 2\frac{v''}{v} = \frac{w'}{w}=\l, \]
+            donde $\l$ es cualquier constante, ya que las variables $x$ y $t$ no tienen relación entre ellas. De lo anterior obtenemos
+            \[
+            \begin{cases}
+                2v''-\l v &=0, \quad v(0)=v(4)=0,\\
+                w'-\l w &=0.
+            \end{cases}
+            \]
+            Supongamos que la solución de la primera ecuación es de la forma $v(x)=e^{rx}$ para alguna $r$. Entonces
+            \begin{align*}
+                2v''-\l v =0 &\Ssi2r^2e^{rx}-\l e^{rx}=0\\
+                & \Ssi e^{rx}(2r^2-\l)=0\\
+                &\Ssi 2r^2-\l=0\\
+                &\Ssi r^2=\frac{\l}{2}.
+            \end{align*}
+            Si $\l>0$, entonces la solución general es
+            \[ v(x) = A e^{\sqrt{\tfrac{\l}{2}}x} + B e^{-\sqrt{\tfrac{\l}{2}}x}, \]
+            con $A, B\in\R$ constantes cualesquiera. Sin embargo, para que se cumplan las condiciones de frontera se debe cumplir que
+            \[
+            \begin{cases}
+                v(0)=A e^{\sqrt{\tfrac{\l}{2}}\cdot 0} + B e^{-\sqrt{\tfrac{\l}{2}}\cdot 0} =0,\\
+                v(4)=A e^{\sqrt{\tfrac{\l}{2}}\cdot 4} + B e^{-\sqrt{\tfrac{\l}{2}}\cdot4}=0,
+            \end{cases}
+            \]
+            que es equivalente al sistema
+            \[
+            \begin{cases}
+                A + B  =0,\\
+                A e^{\sqrt{8\l}} + B e^{-\sqrt{8\l}}=0.
+            \end{cases}
+            \]
+            Despejando en la primera ecuación tenemos que $B=-A$ y sustituyendo en la segunda tenemos
+            \[ A e^{\sqrt{8\l}} -A e^{-\sqrt{8\l}}=A\pp{e^{\sqrt{8\l}} -e^{-\sqrt{8\l}}}=0. \]
+            Como pedimos que $v\neq 0$, entonces $A\neq 0$ y consideramos los $\l$ tales que $e^{\sqrt{8\l}} =e^{-\sqrt{8\l}}$, pero esto sólo ocurre para $\l=0$, lo cual es una contradicción a que $\l>0$. Por lo tanto, 
+            \[ 2v''-\l v =0, \quad v(0)=v(4)=0, \]
+            no tiene solución no trivial para $\l>0$.
+
+            Para el caso $\l=0$ se tiene que $2v''-0\cdot v = 2v'' =0$, entonces $v(x)=Ax+B$, con $A,B\in\R$ constantes cualesquiera. Para que se cumpla que $v(0)=v(4)=0$, se debe cumplir que $A\cdot0+B=B=0$ y $v(4)=A\cdot 4+B=0$, esto es, $A=B=0$ que implica que $v=0$, pero esta solución no nos interesa.
+
+            Por otro lado, para el caso $\l<0$, se tiene que $v(x)=e^{rx}$ donde $r^2=\l/2$. Podemos escribir $\l=-\a^2$ con $\a>0$, entonces 
+            \[r^2=\l/2=-\a^2/2\Ssi r=\pm i\frac{\a}{\sqrt{2}}.\]
+            Se sigue que la solución general es
+            \[v(x) = A\cos\pp{\frac{\a}{\sqrt{2}} x} + B\sin\pp{\frac{\a}{\sqrt{2}} x},\]
+            pero dado que $v(0)=v(4)=0$, entonces se debe cumplir que
+            \[
+            \begin{cases}
+                A\cos\pp{\frac{\a}{\sqrt{2}}\cdot 0} + B\sin\pp{\frac{\a}{\sqrt{2}}\cdot 0} = 0,\\
+                A\cos\pp{\frac{\a}{\sqrt{2}}\cdot 4} + B\sin\pp{\frac{\a}{\sqrt{2}}\cdot 4} =0,
+            \end{cases}
+            \Ssi
+            \begin{cases}
+                A = 0,\\
+                B\sin\pp{2\sqrt{2}\cdot\a} =0.
+            \end{cases}
+            \]
+            Como $A=0$ y queremos que $v\neq 0$, entonces debemos considerar los $\a>0$ tales que $2\sqrt{2}\cdot \a$ anulen la función seno, estos son todos los $\a_k$ con $k\in\N$ tales que
+            \begin{align*}
+                2\sqrt{2}\cdot \a_k = k\pi,\Ssi \a_k=\frac{k\pi\sqrt{2}}{4}.
+            \end{align*}
+            Por lo tanto,
+            \[ v_k(x) = \sin\pp{\frac{\a_k}{\sqrt{2}}\cdot x}= \sin\pp{\frac{k\pi x}{4}}, \]
+            son soluciones para todo $k\in\N$.
+
+            Por otro lado, resolviendo $w'-\l_k w=0$ donde $\l_k=-{\a_k}^2$ tenemos
+            \begin{align*}
+                w'-\l_k w=0 &\Imp \frac{w'}{w}=-{\a_k}^2\\
+                &\Imp \frac{w'}{w}=-\pp{\frac{k\pi\sqrt{2}}{4}}^2\\
+                &\Imp w_k(t)= A_ke^{-\frac{(k\pi)^2}{8}t}.
+            \end{align*}
+            Entonces la solución de la ecuación original es
+            \[ u(x,t) = \sum_{k\in\N}v_k(x)w_k(t)=\sum_{n\in\N}C_k\sin\pp{\frac{k\pi x}{4}}e^{-\frac{(k\pi)^2}{8}t}, \]
+            donde las $C_k$ son contantes. Sin embargo, se debe cumplir que
+            \[u(x,0) = f(x):=\begin{cases}
+                x,\quad   &0<x<2,\\
+                4-x,\quad &2<x<4,
+            \end{cases} \]
+            esto es,
+            \[
+            \sum_{n\in\N}C_k\sin\pp{\frac{k\pi x}{4}}= f(x). \]
+            Por la expansión en series de Fourier se sigue que los $C_k$ son los coeficientes de la serie de Fourier de senos de $f$ en $[0,4]$. Entonces
+            \begin{align*}
+                C_k &= \frac{2}{4}\int_0^4 f(x)\sin\pp{\frac{k\pi x}{4}}dx\\
+                &= \frac{1}{2}\int_0^2 x\sin\pp{\frac{k\pi x}{4}}dx+\frac{1}{2}\int_2^4 (4-x)\sin\pp{\frac{k\pi x}{4}}dx\\
+                &= \frac{1}{2}\int_0^2 x\sin\pp{\frac{k\pi x}{4}}dx+2\int_2^4\sin\pp{\frac{k\pi x}{4}}dx-\frac{1}{2}\int_2^4x\sin\pp{\frac{k\pi x}{4}}dx\\
+                &= \frac{8}{(k\pi)^2}\int_0^{k\pi/2} \xi\sin(\xi)d\xi+\frac{8}{k\pi}\int_{k\pi/2}^{k\pi}\sin(\xi)d\xi-\frac{8}{(k\pi)^2}\int_{k\pi/2}^4\xi\sin(\xi)d\a\qquad (\xi=\tfrac{k\pi x}{4}).
+            \end{align*}
+            Luego, integrando por partes y usando las integrales de funciones trigonométricas conocidas tenemos que
+            \begin{align*}
+                C_k &= \frac{8}{(k\pi)^2}\int_0^{k\pi/2} \xi\sin(\xi)d\xi+\frac{8}{k\pi}\int_{k\pi/2}^{k\pi}\sin(\xi)d\xi-\frac{8}{(k\pi)^2}\int_{k\pi/2}^{k\pi}\xi\sin(\xi)d\a\\
+                &= \frac{8}{(k\pi)^2}\int_0^{k\pi/2} \xi\sin(\xi)d\xi+\frac{8}{k\pi}\int_{k\pi/2}^{k\pi}\sin(\xi)d\xi-\frac{8}{(k\pi)^2}\int_{k\pi/2}^{k\pi}\xi\sin(\xi)d\a\\
+                &= \frac{8}{(k\pi)^2}\cc{-{\xi}\cos\pp{\xi}+\sin\pp{\xi}}_{0}^{k\pi/2}-\frac{8}{k\pi}\cc{\cos\pp{\xi}}_{k\pi/2}^{k\pi}-\frac{8}{(k\pi)^2}\cc{-{\xi}\cos\pp{\xi}+\sin\pp{\xi}}_{k\pi/2}^{k\pi}\\
+                &= \frac{8}{(k\pi)^2}\cc{-\frac{k\pi}{2}\cos\pp{\frac{k\pi}{2}}+\sin\pp{\frac{k\pi}{2}}}
+                -\frac{8}{k\pi}\cc{(-1)^k-\cos\pp{\frac{k\pi}{2}}}
+                \\&\qquad-\frac{8}{(k\pi)^2}\cc{-{k\pi}(-1)^{k}+\frac{k\pi}{2}\cos\pp{\frac{k\pi}{2}}-\sin\pp{\frac{k\pi}{2}}}\\
+                &= \frac{8}{(k\pi)^2}\cc{-\frac{k\pi}{2}\cos\pp{\frac{k\pi}{2}}+\sin\pp{\frac{k\pi}{2}}+{k\pi}(-1)^{k}-\frac{k\pi}{2}\cos\pp{\frac{k\pi}{2}}+\sin\pp{\frac{k\pi}{2}}}
+                \\&\qquad-\frac{8}{k\pi}\cc{(-1)^k-\cos\pp{\frac{k\pi}{2}}}\\
+                &= \frac{8}{(k\pi)^2}\cc{-k\pi\cos\pp{\frac{k\pi}{2}}+2\sin\pp{\frac{k\pi}{2}}+{k\pi}(-1)^{k}}-\frac{8}{k\pi}\cc{(-1)^k-\cos\pp{\frac{k\pi}{2}}}.
+            \end{align*}
+            Si $k$ es par, entonces se puede escribir de la forma $k=2n$ con $n\in\N$, entonces
+            \begin{align*}
+                C_k &= \frac{8}{(2n\pi)^2}\cc{-2n\pi\cos\pp{n\pi}+2\sin\pp{n\pi}+{2n\pi}(-1)^{2n}}-\frac{8}{2n\pi}\cc{(-1)^{2n}-\cos\pp{n\pi}}\\
+                &= \frac{2}{(n\pi)^2}\cc{-2n\pi(-1)^{n}+{2n\pi}}-\frac{4}{n\pi}\cc{1-(-1)^n}\\
+                &= \frac{2}{(n\pi)^2}\cc{-2n\pi(-1)^{n}+{2n\pi}}-\frac{4}{n\pi}\cc{1-(-1)^n}\\
+                &= -\frac{4}{n\pi}\cc{(-1)^{n}-1}+\frac{4}{n\pi}\cc{(-1)^n-1}\\
+                &= 0.
+            \end{align*}
+            Si $k$ es impar, se puede escribir de la forma $k=2n-1$ con $n\in\N$, entonces
+            \begin{align*}
+                C_{2n-1} &= \frac{8}{[(2n-1)\pi]^2}\cc{-(2n-1)\pi\cos\cc{\frac{(2n-1)\pi}{2}}+2\sin\cc{\frac{(2n-1)\pi}{2}}-{(2n-1)\pi}}\\&\quad\quad+\frac{8}{k\pi}\cc{1+\cos\cc{\frac{(2n-1)\pi}{2}}}\\
+                &= \frac{8}{[(2n-1)\pi]^2}\cc{2(-1)^{n+1}-{(2n-1)\pi}}+\frac{8}{(2n-1)\pi}\\
+                &= -\frac{16(-1)^{n}}{[(2n-1)\pi]^2}.
+            \end{align*}
+            Por lo tanto
+            \[ u(x,t) = -\sum_{n\in\N}(-1)^{n}\cc{\frac{4}{(2n-1)\pi}}^2\sin\cc{\frac{(2n-1)\pi x}{4}}e^{-\frac{[(2n-1)\pi]^2}{8}t}. \] \eej
+
+            \item \[
+            \begin{cases}
+                \a^2u_{xx} &= u_t,\quad 0<x<L,~t>0,\\
+                u(0,t) &= 0,\\
+                u(L,t) &= 0,\\
+                u(x,0) &= 2\sin\pp{\tfrac{5\pi x}{2L}}-4\sin\pp{\tfrac{9\pi x}{2L}},\quad 0<x<L.
+            \end{cases}
+            \]
+
+            \sol Por el método de separación de variables, supongamos que la solución se descompone como $u(x,t)=v(x)w(t)$ con $v,w\neq 0$. Tenemos que
+            \[
+            \begin{cases}
+                u(0,t) &= 0\\
+                u(L,t) &= 0\\
+            \end{cases}
+            \Ssi
+            \begin{cases}
+                v(0)w(t) &= 0\\
+                v(L)w(t) &= 0\\
+            \end{cases}
+            \Ssi
+            \begin{cases}
+                v(0) &= 0\\
+                v(L) &= 0\\
+            \end{cases}.
+            \]
+            Por otro lado
+            \[ \a^2u_{xx} = u_t\Ssi \a^2 v''w = vw'\Ssi \a^2 \frac{v''}{v} = \frac{w'}{w}=\l,\]
+            donde $\l$ es cualquier constante ya que las variables $x$ y $t$ son independientes entre ellas. Entonces tenemos el siguiente sistema de edos
+            \[
+            \begin{cases}
+                \a^2v''-\l v=0,\quad v(0)=v(L)=0,\\
+                w'-\l w=0.
+            \end{cases}
+            \]
+            Tenemos que $v(x)=e^{rx}$ con $r$ alguna constante, entonces
+            \[ \a^2v''-\l v=0\Ssi \a^2r^2e^{rx}-\l e^{rx}=0 \Ssi \a^2r^2-\l =0 \Ssi r^2 =\frac{\l}{\a^2}. \]
+            Nuevamente, si $\l=0$, entonces la ecuación es $v''=0$ con solución general $v(x)=Ax+B$ pero para que se cumpla que $v(0)=v(L)=0$ se tiene que cumplir que $A=B=0$, entonces $v=0$, lo cual no queremos. Por otro lado, si $\l>0$, entonces $r=\pm\sqrt{\l}/\abs{a}$ y
+            \[v(x)=Ae^{\tfrac{\l}{|\a|}x}+B e^{-\tfrac{\l}{|\a|}x}.\]
+            Luego,
+            \[v(0)=v(L)=0\Ssi
+            \begin{cases}
+                A+B =0,\\
+                Ae^{\tfrac{\l}{|\a|}L}+B e^{-\tfrac{\l}{|\a|}L}=0,
+            \end{cases}
+            \Ssi
+            \begin{cases}
+                B=-A\\
+                Ae^{\tfrac{\l}{|\a|}L}=A e^{-\tfrac{\l}{|\a|}L}
+            \end{cases},
+            \]
+            lo anterior se cumple solamente cuando $A=B=0$ lo cual es equivalente a $v=0$ que no queremos que ocurra.
+
+            Por otro lado, si $\l<0$, entonces $r=\pm i\sqrt{-\l}/|\a|$, se sigue que
+            \begin{align*}
+                v(x) &= Ae^{\frac{i\sqrt{-\l}}{|\a|}}+Be^{-\frac{i\sqrt{-\l}}{|\a|}}\\
+                &=A\cos\pp{\frac{\sqrt{-\l}}{|\a|}x}+B\sin\pp{\frac{\sqrt{-\l}}{|\a|}x}.
+            \end{align*}
+            Luego,
+            \begin{align*}
+                v(0)=v(L)=0 &\Ssi \begin{cases}
+                    A\cos\pp{\frac{\sqrt{-\l}}{|\a|}\cdot 0}+B\sin\pp{\frac{\sqrt{-\l}}{|\a|}\cdot 0}=0,\\
+                    A\cos\pp{\frac{\sqrt{-\l}}{|\a|}L}+B\sin\pp{\frac{\sqrt{-\l}}{|\a|}L}=0.
+                \end{cases}\\
+                &\Ssi\begin{cases}
+                    A=0,\\
+                    B\sin\pp{\frac{\sqrt{-\l}}{|\a|}L}=0.
+                \end{cases}
+            \end{align*}
+            Como queremos que $v\neq 0$, entonces
+            \[ B\sin\pp{\frac{\sqrt{-\l}}{|\a|}L}=0,~ B\neq 0\Ssi \frac{\sqrt{-\l}}{|\a|}L=n\pi,~n\in\N \Ssi \l=-\pp{\frac{\a n\pi}{L}}^2. \]
+            Sean $\l_n=-\pp{\a n\pi/L}^2$, entonces
+            \[ v_n(x)=B_n\sin\pp{\frac{\sqrt{-\l_n}}{|\a|}x}=B_n\sin\pp{\frac{\sqrt{\pp{\a n\pi/L}^2}}{|\a|}x}=B_n\sin\pp{\frac{n\pi x}{L}} \]
+            son soluciones.
+            Para resolver ${w_n}'-\l_n w_n=0$, tenemos que
+            \begin{align*}
+                {w_n}'-\l_n w_n=0 &\Imp \frac{{w_n}'}{w_n} = \l_n,\\
+                &\Imp w_n(t)= A_ne^{\l_nt} = A_ne^{-\pp{\frac{\a n\pi}{L}}^2t}.
+            \end{align*}
+            Por lo tanto,
+            \[ u(x,t)=\sum_{n\in\N}v_n(x)w_n(t)=\sum_{n\in\N}C_n \sin\pp{\frac{n\pi x}{L}}e^{-\pp{\frac{\a n\pi}{L}}^2t}.\]
+            Luego queremos que 
+            \[ u(x,0)=\sum_{n\in\N}C_n \sin\pp{\frac{n\pi x}{L}}=2\sin\pp{\tfrac{5\pi x}{2L}}-4\sin\pp{\tfrac{9\pi x}{2L}}.\]
+            Por la expansión de la serie de Fourier de senos tenemos que
+            \begin{align*}
+                C_n &= \frac{2}{L}\int_0^L\cc{2\sin\pp{\tfrac{5\pi x}{2L}}-4\sin\pp{\tfrac{9\pi x}{2L}}}\sin\pp{\tfrac{n\pi x}{L}}dx\\
+                &= \frac{4}{L}\int_0^L\sin\pp{\tfrac{5\pi x}{2L}}\sin\pp{\tfrac{n\pi x}{L}}dx-\frac{8}{L}\int_0^L\sin\pp{\tfrac{9\pi x}{2L}}\sin\pp{\tfrac{n\pi x}{L}}dx.
+            \end{align*}
+            Usando que
+            \[ \sin(Ax)\sin(Bx)=\frac{\cos[(A-B)x]-\cos[(A+B)x]}{2}, \]
+            tenemos que
+            \begin{align*}
+                C_n &= \frac{2}{L}\int_0^L\cc{\cos\pp{\tfrac{5\pi-2n\pi}{2L}x}-\cos\pp{\tfrac{5\pi+2n\pi}{2L}x}}dx\\
+                &\qquad-\frac{8}{L}\int_0^L\cc{\cos\pp{\tfrac{9\pi-2n\pi}{2L}x}-\cos\pp{\tfrac{9\pi+2n\pi}{2L}x}}dx\\
+                &= \frac{2}{L}\int_0^L\cos\pp{\tfrac{5\pi-2n\pi}{2L}x}dx-\frac{2}{L}\int_0^L\cos\pp{\tfrac{5\pi+2n\pi}{2L}x}dx\\
+                &\qquad-\frac{8}{L}\int_0^L\cos\pp{\tfrac{9\pi-2n\pi}{2L}x}dx+\frac{8}{L}\int_0^L\cos\pp{\tfrac{9\pi+2n\pi}{2L}x}dx.
+            \end{align*}
+            Sabemos que
+            \[ \int\cos(Ax)dx=\tfrac{1}{A}\sin(Ax)+C. \]
+            Entonces
+            \begin{align*}
+                C_n &= \frac{4}{\pi(5-2n)}\cc{\sin\pp{\tfrac{5\pi-2n\pi}{2L}x}}_0^L-\frac{4}{\pi(5+2n)}\cc{\sin\pp{\tfrac{5\pi+2n\pi}{2L}x}}_0^L\\
+                &\qquad-\frac{16}{\pi(9-2n)}\cc{\sin\pp{\tfrac{9\pi-2n\pi}{2L}x}}_0^L+\frac{16}{\pi(9+2n)}\cc{\sin\pp{\tfrac{9\pi+2n\pi}{2L}x}}_0^L\\
+                &= \frac{4}{\pi(5-2n)}\sin\pp{\tfrac{5-2n}{2}\pi}-\frac{4}{\pi(5+2n)}\sin\pp{\tfrac{5+2n}{2}\pi}\\
+                &\qquad-\frac{16}{\pi(9-2n)}\sin\pp{\tfrac{9-2n}{2}\pi}+\frac{16}{\pi(9+2n)}\sin\pp{\tfrac{9+2n}{2}\pi}\\
+                &= \frac{4}{(2n-5)\pi}\sin\pp{\tfrac{2n-5}{2}\pi}-\frac{4}{(2n+5)\pi}\sin\pp{\tfrac{2n+5}{2}\pi}\\
+                &\qquad-\frac{16}{(2n-9)\pi}\sin\pp{\tfrac{2n-9}{2}\pi}+\frac{16}{(2n+9)\pi}\sin\pp{\tfrac{2n+9}{2}\pi}\\
+                &= \frac{4}{(2n-5)\pi}(-1)^{n+1}+\frac{4}{(2n+5)\pi}(-1)^{n+1}-\frac{16}{(2n-9)\pi}(-1)^{n+1}-\frac{16}{(2n+9)\pi}(-1)^{n+1}\\
+                &= \frac{4}{\pi}(-1)^{n+1}\pp{\frac{1}{2n-5}+\frac{1}{2n+5}-\frac{4}{2n-9}-\frac{4}{2n+9}}\\
+                &= \frac{4}{\pi}(-1)^{n+1}\pp{\frac{4n}{4n^2-5^2}-4\frac{4n}{4n^2-9^2}}\\
+                &= \frac{16n}{\pi}(-1)^{n+1}\pp{\frac{1}{4n^2-5^2}-\frac{4}{4n^2-9^2}}\\
+                &= \frac{16n}{\pi}(-1)^{n}\pp{\frac{12n^2-19}{(4n^2-5^2)(4n^2-9^2)}}\\
+                &= (-1)^{n}\frac{16n(12n^2-19)}{\pi(4n^2-25)(4n^2-81)}.
+            \end{align*}
+            Por lo tanto,
+            \[ u(x,t)=\sum_{n\in\N}(-1)^{n}\frac{16n(12n^2-19)}{\pi(4n^2-25)(4n^2-81)} \sin\pp{\frac{n\pi x}{L}}e^{-\pp{\frac{\a n\pi}{L}}^2t}.\]
+            \eej
+        \end{enumerate}
+        
+
+        \item Resolver las siguientes PDEs relacionadas a la ecuación de onda por los métodos de separación de variables y con el método de D’Alembert,
+
+        \begin{enumerate}
+            \item \[
+            \begin{cases}
+                u_{tt} &= c^2u_{xx},\quad 0<x<L,~t>0,\\
+                u_x(0,t) &= 0,\\
+                u_x(\ell, t) &= 0,\\
+                u(x,0) &= \phi(x),\\
+                u_t(x,0) &= \psi(x).
+            \end{cases}
+            \]
+
+            \item \[
+            \begin{cases}
+                u_{tt} &= a^2u_{xx},\quad 0\leq x\leq \pi,~t>0,\\
+                u(0,t) &= 0,\quad t>0,\\
+                u(\pi, t) &= 0,\quad t>0,\\
+                u(x,0) &= x(\pi-x),\quad 0\leq x\leq\pi,\\
+                u_t(x,0) &= \sin(7\pi x),\quad 0\leq x\leq\pi.
+            \end{cases}
+            \]
+        \end{enumerate}
+
+        \sol Primero resolveremos el caso general (primer inciso) por los dos métodos. Luego, para el segundo inciso usaremos el caso general
+
+        Por el método de separación de variables supongamos que $u(x,t)=v(x)w(t)$ con $v, w\neq 0$. Entonces,
+        \[ u_x(0,t)=u_x(L,t)=0\Ssi\begin{cases}
+            v'(0)w(t)=0\\
+            v'(L)w(t)=0
+        \end{cases}\Ssi  v'(0)=v'(L)=0 . \]
+        Luego,
+        \[ u_{tt} = a^2 u_{xx} \Ssi vw''=a^2 v''w\Ssi\frac{w''}{w}=a^2\frac{v''}{v}=\l, \]
+        donde $\l$ puede ser cualquier constante ya que las variables $x$ y $t$ son independientes entre ellas.
+
+        Ahora buscamos la solución general de $z''=Az$, supongamos que la solución es de la forma $z(\xi)=e^{r\xi}$, tenemos que
+        \[ z''-Az=0\Ssi r^2e^{r\xi}-Ae^{r\xi}=0\Ssi r=\pm\sqrt{A}. \]
+        Entonces $v(x)=Ae^{\tfrac{\sqrt{\l}}{|a|}x}+Be^{-\tfrac{\sqrt{\l}}{|a|}x}$, si $\l=0$, entonces $v''=0$ con solución general $v(x)=Ax+B$ y $v'(x)=A$, para que $v'(0)=v'(L)=0$ se debe cumplir que $A=0$ por lo cual $v$ es un función constante, pero como $u(x,0)=\phi(x)$, entonces $v(x)=\phi(x)/w(0)$ con $w(0)\neq 0$ por lo cual $v$ no puede ser constante. Si $\l>0$, entonces
+        \[ 
+        v'(0)=v'(L)=0\Ssi \begin{cases}
+            A\tfrac{\sqrt{\l}}{|a|}-\tfrac{\sqrt{\l}}{|a|} B=0\\
+            A\tfrac{\sqrt{\l}}{|a|}e^{\tfrac{\sqrt{\l}}{|a|}L}-\tfrac{\sqrt{\l}}{|a|} Be^{-\tfrac{\sqrt{\l}}{|a|}L} =0
+        \end{cases}
+        \ssi
+        \begin{cases}
+            A=B\\
+            Ae^{\tfrac{\sqrt{\l}}{|a|}L} =Ae^{-\tfrac{\sqrt{\l}}{|a|}L}
+        \end{cases},
+        \]
+        lo cual ocurre sólo cuando $A=B=0$ que implica $v=0$ lo cual no queremos. Por otro lado, si $\l<0$, entonce
+        \[ v(x) = Ae^{i\frac{\sqrt{-\l}}{|a|}} + Be^{-i\frac{\sqrt{-\l}}{|a|}} = A\cos\pp{\frac{\sqrt{-\l}}{|a|}x}+ B\sin\pp{\frac{\sqrt{-\l}}{|a|}x}. \]
+        y
+        \[ v'(x) =-A\frac{\sqrt{-\l}}{|a|}\sin\pp{\frac{\sqrt{-\l}}{|a|}x}+ B\frac{\sqrt{-\l}}{|a|}\cos\pp{\frac{\sqrt{-\l}}{|a|}x}. \]
+        Luego
+        \[ v'(0)=v'(L)=0\ssi \begin{cases}
+             B\tfrac{\sqrt{-\l}}{|a|}=0\\
+            -A\sin\pp{\tfrac{\sqrt{-\l}}{|a|}L}+ B\cos\pp{\tfrac{\sqrt{-\l}}{|a|}L}=0
+        \end{cases}\ssi\begin{cases}
+            B=0\\
+            \sin\pp{\tfrac{\sqrt{-\l}}{|a|}L}=0
+        \end{cases}. \]
+        Como queremos que $v\neq 0$ entonces $A\neq 0$ y po lo tanto sólo consideramos los $\l_n$ tales que $\tfrac{\sqrt{-\l_n}}{|a|}L=n\pi$ con $n\in\N$, estos son $\l_n=-(n\pi a/L)^2$ y
+        \[ v_n(x)= A_n\cos\pp{\frac{\sqrt{-\l_n}}{|a|}x}= A_n\cos\pp{\frac{n\pi x}{L}}.\]
+        Por otro lado, ${w_n}''=\l_nw_n$ tiene como solución general
+        \[ w_n(t)=B_ne^{i\tfrac{n\pi |a|}{L}t}+ C_n e^{-i\tfrac{n\pi |a|}{L}t}= B_n\cos\pp{\tfrac{n\pi |a|}{L}t}+ C_n\sin\pp{\tfrac{n\pi |a|}{L}t}. \]
+
+        Por lo tanto, podemos escribir la solución como
+        \[ u(x,t) = \sum_{n\in\N}v_n(x)w_n(t)=\sum_{n\in\N}\cos\pp{\tfrac{n\pi x}{L}}\cc{A_n\cos\pp{\tfrac{n\pi |a|}{L}t}+ B_n\sin\pp{\tfrac{n\pi |a|}{L}t}}\]
+        y
+        \[ u_t(x,t) = \sum_{n\in\N}\cos\pp{\tfrac{n\pi x}{L}}\cc{-A_n \tfrac{n\pi |a|}{L}\sin\pp{\tfrac{n\pi |a|}{L}t}+ B_n\tfrac{n\pi |a|}{L}\cos\pp{\tfrac{n\pi |a|}{L}t}}.\]
+        Luego,
+        \[ \begin{cases}
+                u(x,0)=\phi(x)\\
+                u_t(x,0)=\psi(x)
+            \end{cases}
+            \Ssi
+            \begin{cases}
+                \sum_{n\in\N}A_n\cos\pp{\tfrac{n\pi x}{L}}=\phi(x)\\
+                \sum_{n\in\N}B_n\tfrac{n\pi |a|}{L}\cos\pp{\tfrac{n\pi x}{L}}=\psi(x)
+            \end{cases}. \]
+        Por la expansión de la serie de cosenos de Fourier se tiene que
+        \[ A_n = \frac{2}{L}\int_0^{L}\phi(x)\cos\pp{\tfrac{n\pi x}{L}}dx\Text{y}B_n= \frac{2}{n\pi|a|}\int_0^{L}\psi(x)\cos\pp{\tfrac{n\pi x}{L}}dx.\]
+
+        Ahora resolveremos la ecuación usando el método de D'Alembert. Sean
+        \[ \xi = x-at\Text{y}\eta=x+at. \]
+        Usando la regla de la cadena dos veces tenemos
+        \begin{align*}
+            u_x =\frac{\partial u}{\partial\xi}\frac{\partial\xi}{\partial x}&+\frac{\partial u}{\partial\eta}\frac{\partial\eta}{\partial x}=u_\xi+u_\eta,\\
+            \Imp u_{xx} =u_{\xi\xi}+u_{\xi\eta}&+u_{\eta\eta}+u_{\eta\xi}=u_{\xi\xi}+2u_{\xi\eta}+u_{\eta\eta},
+        \end{align*}
+        ya que
+        \[ \frac{\partial\xi}{\partial x}=\frac{\partial\eta}{\partial x}=1. \]
+        Por otro lado, de manera analoga tenemos
+        \begin{align*}
+            u_t = \frac{\partial u}{\partial\xi}\frac{\partial\xi}{\partial t}&+\frac{\partial u}{\partial\eta}\frac{\partial\eta}{\partial t}=-au_\xi+au_\eta,\\
+            \Imp u_{tt} = a(au_{\xi\xi}-au_{\xi\eta}&-au_{\xi\eta}+au_{\eta\eta}) = a^2(u_{\xi\xi}-2u_{\xi\eta}+u_{\eta\eta}) 
+        \end{align*}
+        ya que
+        \[ \frac{\partial\xi}{\partial t}=-a\Text{y} \frac{\partial\eta}{\partial t}=a. \]
+        Sustituyendo en la ecuación original tenemos que
+        \[ a^2(u_{\xi\xi}-2u_{\xi\eta}+u_{\eta\eta}) = a^2(u_{\xi\xi}+2u_{\xi\eta}+u_{\eta\eta})\Imp u_{\xi\eta}=0. \]
+        Luego, itegrando dos veces tenemos
+        \[ u(x,t)=\iint u_{\xi\eta}~d\eta d\xi=\int f(\xi)d\xi=f(\xi)+g(\eta)=f(x-at)+g(x+at),\]
+        donde $f$ y $g$ son funciones arbitrarias.
+
+        Luuego tenemos que
+        \begin{align*}
+            u(x, 0)=\phi(x),~u_t(x,0)=\psi(x) &\Ssi f(x)+g(x)=\phi(x),~ -af'(x)+ag'(x)=\psi(x)\\
+            &\Ssi f'(x)+g'(x)=\phi'(x),~ g'(x)-f'(x)=\tfrac{\psi(x)}{a}.
+        \end{align*}
+        Sumando y restando ambas expresiones tenemos que
+        \[ g'(x)=\tfrac{a\phi'(x)+\psi(x)}{2a}\Text{y} f'(x)= \tfrac{a\phi'(x)-\psi(x)}{2a}. \]
+        Integrando tenemos que
+        \[f(x)=\frac{1}{2}\phi(x)-\frac{1}{2a}\int\psi(x)dx\Text{y}g(x)=\frac{1}{2}\phi(x)+\frac{1}{2a}\int\psi(x)dx\]
+        Por lo tanto
+        \[u(x,t)=\frac{1}{2}\cc{\phi(x-at)+\phi(x+at)}+\frac{1}{2a}\int_{x-ct}^{x+ct}\psi(z)dz.\]
+        
+
+        
+
+        
+        
+        
+        
+        \eej
+
+
+        \item Para cada uno de los problemas grafica las soluciones con un programa en Python que calcule los $n$ primeros
+        términos de las series de Fourier soluciones. Definir los valores para los dominios $L$ y $T$, para $x$ y $t$ respectivamente. Las constantes de las ecuaciones pueden ser variables. Grafica las soluciones con $n=1,2,5,10, 20$.
+    \end{enumerate}
+\end{document}

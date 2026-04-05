@@ -22,6 +22,7 @@ EDP-II
 ├───scripts
 └───tareas
     └───tarea 1
+    └───tarea 2
 ```
 
 ## Instalación y Configuración
