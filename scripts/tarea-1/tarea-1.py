@@ -29,10 +29,17 @@ def terms_function_1b(n, X, T, L=1, alpha=1) -> np.ndarray:
     return (-1)**n*16*n*(12*n**2-19)/(np.pi*(4*n**2-25)*(4*n**2-81))\
         *np.sin(n*np.pi*X/L)*np.exp(-(alpha*n*np.pi/L)**2*T)
 
+def terms_function_2b(n, X, T, L=1, alpha=1) -> np.ndarray:
+    return np.sin(n*np.pi*X/L)*((4*(-1)**(n+1)+4)/(n**3*np.pi)*np.cos(n*np.pi\
+        *alpha/L*T)+ (-1)**n*2*np.sin(7*np.pi**2)/(np.pi*alpha*(49*np.pi**2\
+                                            -n**2))*np.sin(n*np.pi*alpha/L*T))
 
-# Funcion para calcular la solución sumando los términos de la serie de Fourier
 
-def sum_terms(N: int, x: np.ndarray, t: np.ndarray, terms_function) -> np.ndarray:
+
+# Funcion para calcular la solucion sumando los terminos de la serie de Fourier
+
+def sum_terms(N: int, x: np.ndarray, t: np.ndarray, terms_function: callable)\
+    -> np.ndarray:
     """ Calcula la solución sumando los términos de la serie de Fourier. La
     función terms_function debe aceptar tres argumentos: n, X, T, donde n es el
     índice del término, X y T son mallas 2D para x y t respectivamente. La
@@ -58,9 +65,10 @@ def sum_terms(N: int, x: np.ndarray, t: np.ndarray, terms_function) -> np.ndarra
 # Funcion auxiliar para imprimir información
 def print_solution_info(X, T, sol):
     """Imprime información sobre los rangos y shapes de X, T y la solución."""
-    print(f"Range of x: {X.min()} to {X.max()} with shape {X.shape}")
-    print(f"Range of t: {T.min()} to {T.max()} with shape {T.shape}")
-    print(f"Shape of the solution: {sol.shape}")
+    print(80*"=" + "\nInfo of the solution:")
+    print(f"\tRange of x: {X.min()} to {X.max()} with shape {X.shape}")
+    print(f"\tRange of t: {T.min()} to {T.max()} with shape {T.shape}")
+    print(f"\tShape of the solution: {sol.shape}"+"\n" + 80*"=")
 
 # Función para mostrar la solución usando un mapa de colores
 def show_solution(X, T, sol, title='Solution'):
@@ -96,3 +104,16 @@ if __name__ == "__main__":
     X, T, sol = sum_terms(N, x, t, lambda n, X, T:\
                           terms_function_1b(n, X, T, L=L, alpha=alpha))
     show_solution(X, T, sol, title=f'Solucion de Ejercicio 1b con {N} terminos, L={L}, alpha={alpha}')
+
+    # Para el ejercicio 2a no estan definidas las funciones \phi y \psi por lo
+    # cual no lo consideramos para la implementacion.
+
+
+    # Ejercicio 2b
+    L, alpha = np.pi, 2
+    x, t = np.linspace(0, L, 250), np.linspace(0, 6, 250)
+    N = 10
+
+    X, T, sol = sum_terms(N, x, t, lambda n, X, T:\
+                          terms_function_2b(n, X, T, L=L, alpha=alpha))
+    show_solution(X, T, sol, title=f'Solucion de Ejercicio 2b con {N} terminos, L={np.round(L, 2)}, alpha={alpha}')
