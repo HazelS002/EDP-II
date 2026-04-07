@@ -7,4 +7,12 @@ dependencies:
   - numpy
   - matplotlib
   - scipy
+  - ipython
+  - jupyter
+  - mkl
+  - sympy
   - pip
+  - latex
+  - dvipng
+  - pip:
+    # - cualquier-paquete-extra
