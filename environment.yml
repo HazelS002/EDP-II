@@ -12,7 +12,5 @@ dependencies:
   - mkl
   - sympy
   - pip
-  - latex
-  - dvipng
   - pip:
     # - cualquier-paquete-extra
