@@ -6,6 +6,8 @@ Uso del módulo eqsolver desarrollado.
 import sympy as sp
 from eqsolver import Equation, Condition, AdomianMethod
 
+N_termns = 10
+
 def print_title(title: str) -> None:
     print("\n\n\n" + "="*80 + "\n" + title + "\n" + "="*80)
     
@@ -16,17 +18,17 @@ def equation_a():
     x = sp.Symbol('x')
     y = sp.Function('y')(x)
     
-    L = y.diff(x)          # y'
-    R = sp.S(0)            # no hay término lineal adicional
-    N = -y**2              # porque llevamos todo al lado izquierdo: y' - y^2 = x^2 -> L + N = x^2, entonces N = -y^2
-    g = x**2               # término fuente
+    L = y.diff(x)
+    R = sp.S(0)
+    N = -y**2
+    g = x**2
     
     conditions = [Condition(var=y, value=0, at_point=0, is_initial=True)]
     eq = Equation(L, R, N, g, [x], y, conditions)
     
-    solver = AdomianMethod(n_terms=5, simplify=True)
+    solver = AdomianMethod(n_terms=N_termns, simplify=True)
     sol = solver.solve(eq)
-    print("Solución ADM (5 términos):")
+    print(f"Solución ADM ({N_termns} términos):")
     sp.pprint(sol)
     
 
@@ -36,19 +38,17 @@ def equation_b():
     t, x = sp.symbols('t x')
     u = sp.Function('u')(t, x)
     
-    # Ecuación: u_t + (1/4)*(u_x)^2 - x^2 = 0
-    # L = u_t (operador temporal de primer orden)
     L = u.diff(t)
-    R = sp.S(0)                     # no hay términos lineales
-    N = (1/4)*u.diff(x)**2          # parte no lineal
-    g = x**2                        # término fuente (con signo: L + N = g)
+    R = sp.S(0)
+    N = (1/4)*u.diff(x)**2
+    g = x**2
 
     conditions = [Condition(var=u, value=0, at_point={t:0, x:x}, is_initial=True)]
     eq = Equation(L, R, N, g, [t, x], u, conditions)
     
-    solver = AdomianMethod(n_terms=4, simplify=True)
+    solver = AdomianMethod(n_terms=N_termns, simplify=True)
     sol = solver.solve(eq)
-    print("Solución ADM (primeros 4 términos en t):")
+    print(f"Solución ADM (primeros {N_termns} términos en t):")
     sp.pprint(sol)
     
 def equation_c():
@@ -57,18 +57,17 @@ def equation_c():
     t, x = sp.symbols('t x')
     u = sp.Function('u')(t, x)
     
-    # Ecuación: u_t + u^2 u_x = 0
     L = u.diff(t)
     R = sp.S(0)
-    N = u**2 * u.diff(x)       # no linealidad
+    N = u**2 * u.diff(x)
     g = sp.S(0)
     
     conditions = [Condition(var=u, value=3*x, at_point={t:0, x:x}, is_initial=True)]
     eq = Equation(L, R, N, g, [t, x], u, conditions)
     
-    solver = AdomianMethod(n_terms=4, simplify=True)
+    solver = AdomianMethod(n_terms=N_termns, simplify=True)
     sol = solver.solve(eq)
-    print("Solución ADM (primeros 4 términos en t):")
+    print(f"Solución ADM (primeros {N_termns} términos en t):")
     sp.pprint(sol)
     
 if __name__ == "__main__":
