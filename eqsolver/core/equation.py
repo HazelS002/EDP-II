@@ -1,28 +1,31 @@
 """
-Representación de una ecuación diferencial ordinaria o parcial.
+Definición de la ecuación diferencial y sus condiciones.
 """
 
-from typing import List, Tuple, Union, Optional, Any
 import sympy as sp
-from sympy import Function, Symbol, Derivative, Expr
+from sympy import Expr, Function, Symbol, Derivative
+from typing import List, Union, Dict, Optional, Any
 
 
 class Condition:
-    """Condición inicial o de contorno."""
-    def __init__(self, var: Symbol, value: Expr, at_point: Expr, is_initial: bool = True):
-        """
-        var: variable independiente (ej. t)
-        value: valor de la función (o derivada) en at_point
-        at_point: punto donde se aplica la condición
-        is_initial: True si es condición inicial, False si es de contorno
-        """
+    """
+    Representa una condición inicial o de contorno.
+    
+    Atributos:
+        var: la función o derivada a la que se aplica la condición (ej. u, u.diff(t))
+        value: valor de la condición (expresión simbólica)
+        at_point: punto donde se aplica (número, símbolo o diccionario {var: punto})
+        is_initial: True si es condición inicial (en tiempo), False si es de contorno
+    """
+    def __init__(self, var: Any, value: Expr, at_point: Union[Expr, Dict[Symbol, Expr]], 
+                 is_initial: bool = True):
         self.var = var
         self.value = value
         self.at_point = at_point
         self.is_initial = is_initial
 
     def __repr__(self):
-        return f"Condition({self.var}={self.value} @ {self.at_point}, initial={self.is_initial})"
+        return f"Condition({self.var} = {self.value} @ {self.at_point}, initial={self.is_initial})"
 
 
 class Equation:
@@ -30,12 +33,15 @@ class Equation:
     Representa una ecuación diferencial de la forma:
         L(u) + R(u) + N(u) = g
     donde:
-        L : operador lineal invertible (principal, de mayor orden)
-        R : resto lineal (operadores de orden inferior)
+        L : operador lineal invertible (principal, típicamente derivada de mayor orden respecto al tiempo)
+        R : resto lineal (operadores lineales de orden inferior)
         N : término no lineal (función de u y sus derivadas)
         g : término fuente (función de las variables independientes)
+        var : lista de variables independientes (ej. [t] para EDO, [t, x] para EDP)
+        dep_var : función dependiente (ej. Function('u')(t, x))
+        conditions : lista de objetos Condition (iniciales y/o de contorno)
 
-    También almacena condiciones y las variables involucradas.
+    El usuario debe proporcionar explícitamente la descomposición L, R, N, g.
     """
 
     def __init__(
@@ -48,12 +54,6 @@ class Equation:
         dep_var: Function,
         conditions: Optional[List[Condition]] = None,
     ):
-        """
-        L, R, N, g: expresiones sympy que representan los operadores.
-        var: lista de variables independientes (ej. [t] para EDO, [t, x] para EDP)
-        dep_var: función dependiente, ej. Function('u')(t, x)
-        conditions: lista de condiciones (iniciales o de contorno)
-        """
         self.L = L
         self.R = R
         self.N = N
@@ -62,47 +62,65 @@ class Equation:
         self.dep_var = dep_var
         self.conditions = conditions or []
 
-        # Verificación básica de que dep_var aparece en los operadores
-        # (se puede mejorar)
-        # self._validate()
+        # Conversión automática de ceros a SymPy Integer
+        if self.L == 0:
+            self.L = sp.S(0)
+        if self.R == 0:
+            self.R = sp.S(0)
+        if self.N == 0:
+            self.N = sp.S(0)
+        if self.g == 0:
+            self.g = sp.S(0)
 
-    @classmethod
-    def from_expression(
-        cls,
-        expr: Expr,
-        var: List[Symbol],
-        dep_var: Function,
-        conditions: Optional[List[Condition]] = None,
-    ):
+        # Validación básica: L debe contener al menos una derivada de dep_var
+        self._validate()
+
+    def _validate(self):
+        """Verifica que L contenga una derivada de dep_var (para poder invertir)."""
+        has_derivative = False
+        for arg in sp.preorder_traversal(self.L):
+            if isinstance(arg, Derivative) and arg.expr == self.dep_var:
+                has_derivative = True
+                break
+        if not has_derivative and self.L != 0:
+            raise ValueError("El operador L debe contener al menos una derivada de la función dependiente.")
+
+    def get_order(self) -> int:
+        """Retorna el orden de la ecuación (grado de la derivada más alta en L)."""
+        max_order = 0
+        for arg in sp.preorder_traversal(self.L):
+            if isinstance(arg, Derivative) and arg.expr == self.dep_var:
+                order = len(arg.variables)
+                if order > max_order:
+                    max_order = order
+        return max_order
+
+    def get_time_variable(self) -> Optional[Symbol]:
         """
-        Constructor alternativo que acepta una expresión completa del tipo:
-            expr = 0
-        donde expr contiene L(u)+R(u)+N(u)-g.
-        Intenta descomponer automáticamente los términos lineales y no lineales.
-        Este método es básico y puede fallar para casos complejos; se recomienda
-        usar el constructor directo con componentes separados.
+        Intenta determinar la variable temporal (aquella respecto a la cual se deriva en L).
+        Si L tiene múltiples derivadas (caso EDP), se toma la primera derivada encontrada.
+        Retorna None si no se encuentra.
         """
-        # Por simplicidad, esta implementación asume que expr ya está expandida
-        # y que todo término que no sea lineal en dep_var y sus derivadas se considera no lineal.
-        # En la práctica, se necesita un análisis más cuidadoso.
-        raise NotImplementedError(
-            "La descomposición automática no está implementada aún. "
-            "Use el constructor explícito con L, R, N, g."
-        )
+        for arg in sp.preorder_traversal(self.L):
+            if isinstance(arg, Derivative) and arg.expr == self.dep_var:
+                return arg.variables[0]
+        return None
 
-    def order(self) -> int:
-        """Retorna el orden de la ecuación (mayor orden de derivada en L)."""
-        # Buscar la derivada de mayor orden en L (asumiendo que L contiene el operador principal)
-        from sympy import Derivative
+    def get_spatial_variables(self) -> List[Symbol]:
+        """Retorna las variables independientes que no son la temporal."""
+        t_var = self.get_time_variable()
+        if t_var is None:
+            return self.var[:]
+        return [v for v in self.var if v != t_var]
 
-        def max_order(expr):
-            orders = []
-            for arg in sp.preorder_traversal(expr):
-                if isinstance(arg, Derivative) and arg.expr == self.dep_var:
-                    orders.append(len(arg.variables))
-            return max(orders) if orders else 0
+    def is_ode(self) -> bool:
+        """Retorna True si es una EDO (solo una variable independiente)."""
+        return len(self.var) == 1
 
-        return max_order(self.L)
+    def is_pde(self) -> bool:
+        """Retorna True si es una EDP (más de una variable independiente)."""
+        return len(self.var) > 1
 
     def __repr__(self):
-        return f"Equation(L={self.L}, R={self.R}, N={self.N}, g={self.g}, var={self.var}, dep_var={self.dep_var})"
+        return (f"Equation(L={self.L}, R={self.R}, N={self.N}, g={self.g}, "
+                f"var={self.var}, dep_var={self.dep_var}, conditions={self.conditions})")

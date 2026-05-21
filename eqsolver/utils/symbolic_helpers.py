@@ -3,71 +3,123 @@ Funciones auxiliares para manipulación simbólica: integrales definidas, invers
 """
 
 import sympy as sp
-from sympy import Function, Symbol, Derivative, Integral, exp, oo
-from typing import List, Callable, Union
+from sympy import Function, Symbol, Derivative, Integral, Eq, solve
+from typing import List, Union, Dict, Optional
+from ..core.equation import Condition
 
 
-def inverse_operator(L_expr: sp.Expr, dep_var: Function, var: Symbol, order: int, conditions: List = None):
+def inverse_operator(L_expr: sp.Expr, dep_var: Function, variables: List[Symbol],
+                     order: int, conditions: List[Condition], time_var: Symbol = None):
     """
-    Calcula la inversa del operador diferencial lineal L de orden 'order',
-    asumiendo que L es de la forma d^order/dvar^order (operador principal).
-    Se aplican condiciones iniciales (de Cauchy) en el punto var0.
-
-    Retorna una función que, dada una expresión f(var), retorna u tal que L(u) = f
-    satisfaciendo las condiciones.
-
-    Para operadores más generales, se requeriría un enfoque más sofisticado.
-    Aquí implementamos la inversa como integración repetida desde el punto dado por las condiciones.
+    Construye la inversa del operador L, asumiendo que L es d^m/dt^m (derivada pura respecto al tiempo).
+    Para EDOs, variables es [t]; para EDPs, la inversa solo integra en tiempo.
+    conditions: lista de Condition con is_initial=True, que definen el punto base t0.
+    Retorna una función que aplica la inversa a una expresión f.
     """
-    # Buscar la condición inicial para la función y sus derivadas hasta order-1
-    # Asumimos que conditions es una lista de Condition con is_initial=True
-    if conditions is None:
-        conditions = []
+    # Determinar variable temporal
+    if time_var is None:
+        if len(variables) == 1:
+            time_var = variables[0]
+        else:
+            # Buscar la variable respecto a la cual L deriva (suponemos que es la primera derivada encontrada)
+            for arg in sp.preorder_traversal(L_expr):
+                if isinstance(arg, Derivative) and arg.expr == dep_var:
+                    time_var = arg.variables[0]
+                    break
+            if time_var is None:
+                raise ValueError("No se pudo determinar la variable temporal en L.")
 
-    # Ordenamos las condiciones por orden de derivada (asumiendo que están completas)
-    # En un caso real, se necesita asegurar que tenemos condiciones para 0..order-1
-    # Para simplificar, suponemos que la primera condición es para la función sin derivar
-    # y las siguientes son para derivadas de orden creciente.
-    # Extraemos el punto base común (debería ser el mismo para todas)
-    if not conditions:
-        point = 0  # por defecto
-        init_vals = [0]*order
+    # Extraer punto base de las condiciones iniciales
+    init_conds = [c for c in conditions if c.is_initial]
+    if init_conds:
+        point = init_conds[0].at_point
+        if isinstance(point, dict):
+            point = point.get(time_var, 0)
     else:
-        point = conditions[0].at_point
-        init_vals = [sp.S(0)] * order
-        for cond in conditions:
-            # Asumimos que cond.var es la variable independiente y cond.value es el valor inicial
-            # Para derivadas, necesitamos saber el orden. Por simplicidad, creamos un diccionario
-            # Aquí solo manejamos condiciones del tipo u(point)=a, u'(point)=b, etc.
-            # Por ahora, dejamos como placeholder.
-            # En la práctica, se puede usar un enfoque más robusto.
-            pass
+        point = 0
 
-    # Construimos una función que integra repetidamente desde 'point'
-    def integrar_n_veces(f, var, point, n):
-        result = f
-        for i in range(n):
-            result = sp.Integral(result, (var, point, var))
+    def L_inverse(expr):
+        # Integrar expr desde point hasta time_var, order veces
+        result = expr
+        for _ in range(order):
+            result = Integral(result, (time_var, point, time_var))
         return result
-
-    def L_inverse(f_expr):
-        # Integral múltiple desde point
-        return integrar_n_veces(f_expr, var, point, order)
 
     return L_inverse
 
 
-def integrate_with_conditions(expr: sp.Expr, var: Symbol, point: sp.Expr, order: int, conditions: List):
+def integrate_with_conditions(expr: sp.Expr, var: Symbol, order: int,
+                              conditions: List[Condition]) -> sp.Expr:
     """
-    Integra expr order veces desde point y aplica las condiciones para determinar constantes.
+    Integra expr order veces respecto a var, y luego determina las constantes de integración
+    usando las condiciones dadas (deben ser condiciones iniciales en el punto base).
     Retorna la primitiva que satisface las condiciones.
     """
-    # Implementación básica: integrar order veces, luego resolver constantes.
-    # Por simplicidad, no se implementa completamente aquí.
-    raise NotImplementedError("Función en desarrollo")
+    # Realizar integrales indefinidas
+    result = expr
+    constants = []
+    for i in range(order):
+        result = Integral(result, var)
+        Ci = sp.Symbol(f'C{i}')
+        constants.append(Ci)
+        result = result + Ci
+
+    # Si no hay condiciones, devolver con constantes
+    if not conditions:
+        return result
+
+    # Extraer punto base
+    point = conditions[0].at_point
+    if isinstance(point, dict):
+        # Para EDPs, necesitamos la variable temporal; asumimos que var es la temporal
+        point = point.get(var, 0)
+
+    # Construir ecuaciones
+    eqs = []
+    for cond in conditions:
+        if not cond.is_initial:
+            continue
+        # Determinar orden de derivada
+        if cond.var == cond.var.func:
+            deriv_order = 0
+            expr_eval = result.subs(var, point)
+        elif isinstance(cond.var, Derivative) and cond.var.expr == cond.var.expr.func:
+            deriv_order = len(cond.var.variables)
+            expr_eval = result.diff(var, deriv_order).subs(var, point)
+        else:
+            continue
+        eqs.append(Eq(expr_eval, cond.value))
+
+    if eqs:
+        sol = solve(eqs, constants)
+        result = result.subs(sol)
+    return result
 
 
-def apply_initial_conditions(expr: sp.Expr, var: Symbol, conditions: List) -> sp.Expr:
-    """Sustituye las condiciones iniciales en una expresión que involucra constantes indeterminadas."""
-    # Placeholder
-    return expr
+def apply_initial_conditions(expr: sp.Expr, var: Symbol, conditions: List[Condition]) -> sp.Expr:
+    """
+    Dada una expresión que puede contener constantes indeterminadas (C1, C2, ...),
+    aplica las condiciones iniciales para determinar las constantes.
+    """
+    free_syms = [s for s in expr.free_symbols if str(s).startswith('C')]
+    if not free_syms:
+        return expr
+
+    eqs = []
+    for cond in conditions:
+        if not cond.is_initial:
+            continue
+        if cond.var == cond.var.func:
+            deriv_order = 0
+            expr_eval = expr.subs(var, cond.at_point)
+        elif isinstance(cond.var, Derivative) and cond.var.expr == cond.var.expr.func:
+            deriv_order = len(cond.var.variables)
+            expr_eval = expr.diff(var, deriv_order).subs(var, cond.at_point)
+        else:
+            continue
+        eqs.append(Eq(expr_eval, cond.value))
+
+    if not eqs:
+        return expr
+    sol = solve(eqs, free_syms)
+    return expr.subs(sol)
