@@ -3,9 +3,6 @@ Aplicación del método de Adomian a varios problemas de EDOs y EDPs.
 Uso del módulo eqsolver desarrollado.
 """
 
-import sympy as sp
-from eqsolver import Equation, Condition, AdomianMethod
-
 N_termns = 10
 
 def print_title(title: str) -> None:
@@ -69,8 +66,56 @@ def equation_c():
     sol = solver.solve(eq)
     print(f"Solución ADM (primeros {N_termns} términos en t):")
     sp.pprint(sol)
+
+def system_equations_d():
+    t = sp.symbols('t')
+    u = sp.Function('u')(t)
+    v = sp.Function('v')(t)
+
+    # Ecuación 1: u'' + v = 0
+    L1 = u.diff(t, t)
+    R1 = sp.S(0)
+    N1 = v
+    g1 = sp.S(0)
+
+    # Ecuación 2: v'' + u = 0
+    L2 = v.diff(t, t)
+    R2 = sp.S(0)
+    N2 = u
+    g2 = sp.S(0)
+
+    # Condiciones iniciales globales
+    conditions = [
+        Condition(var=u, value=sp.S(0), at_point=sp.S(0), is_initial=True),
+        Condition(var=u.diff(t), value=sp.S(1), at_point=sp.S(0), is_initial=True),
+        Condition(var=v, value=sp.S(0), at_point=sp.S(0), is_initial=True),
+        Condition(var=v.diff(t), value=sp.S(-1), at_point=sp.S(0), is_initial=True),
+    ]
+
+    # Crear las ecuaciones individuales (sin condiciones internas)
+    eq1 = Equation(L1, R1, N1, g1, [t], u, conditions=[])
+    eq2 = Equation(L2, R2, N2, g2, [t], v, conditions=[])
+
+    # Sistema
+    system = SystemEquation(equations=[eq1, eq2], dep_vars=[u, v], conditions=conditions)
+
+    # Resolver con Adomian (6 términos para buena precisión)
+    solver = AdomianSystemSolver(n_terms=N_termns, simplify=True)
+    sol_u, sol_v = solver.solve(system)
+
+    print("Solución aproximada para u(t):")
+    sp.pprint(sol_u)
+    print("\nSolución aproximada para v(t):")
+    sp.pprint(sol_v)
+
+    return sol_u, sol_v
     
 if __name__ == "__main__":
+    from eqsolver import Equation, Condition, AdomianMethod,\
+        SystemEquation, AdomianSystemSolver
+    import sympy as sp
+
     equation_a()
     equation_b()
     equation_c()
+    system_equations_d()
