@@ -114,6 +114,80 @@
     \bigskip
     
     \begin{enumerate}
-        \item 
+        \item Diseñar un algoritmo en Python que resuelva ecuaciones
+        diferenciales con el método de Descomposición de Adomian en general.
+
+        \item Con el algoritmo creado resolver los siguientes problemas, compara
+        con las soluciones analiticas presentadas por Chen en 2004:
+        \begin{enumerate}[(a)]
+            \item $y'=x^2+y^2$, $y(0)=0$
+            \item $u_t=x^2-(u_x)^2/4$, $u(x,0)=0$
+            \item $u_t+u^2u_x=0$, $u(x,0)=3x$
+            \item \begin{align*}
+                \frac{d^2}{dt^2}u+v=0,&\qquad \frac{d^2}{dt^2}v+u=0,\\
+                u(0)=0,&\quad u'(0)=1,\\
+                v(0)=0,&\quad v'(0)=-1.
+            \end{align*}
+            \item \begin{align*}
+                \frac{\partial^2}{\partial t^2}u=
+                \frac{\partial^2}{\partial x^2}u,&\quad 0<x<\pi,~t>0,\\
+                u(0,t)=u(\pi, t)=0,&\quad t>0,\\
+                u(x,0)=\sin^3(x),&\quad 0<x<\pi,\\
+                u_t(x,0) = \sin(2x),&\quad 0<x<\pi.
+            \end{align*}
+        \end{enumerate}
+
+        \item Resolver los problemas de Black-Scholes:
+        \begin{enumerate}[(a)]
+            \item \[
+                \begin{cases}
+                    rC(t, x) = C_t(t, x) + \frac{1}{2}\sigma^2x^2C_{xx}(t, x)
+                    + rxC_x(t, x),\qquad& x > 0,~t\in [0, T],\\
+                    C(T, x) = \max(x-K, 0),\qquad&\\
+                    C(t, x) = x-Ke^{-r(T-t)},\qquad&\text{cuando }x\to\infty,\\
+                    C(t, 0) = 0,\qquad&\forall t > 0.
+                \end{cases}
+            \]
+
+            \item Consideremos el problema:
+            \[
+                \begin{cases}
+                    U_t(\tau, y) = U_{xx}(\tau, y),\quad& y > 0,
+                    \tau\in\cc{0, \tfrac{\sigma^2T}{2}},\\
+                    U(0, y) = \max\pp{e^{\tfrac{1}{2}(\gamma+1)y}-e^{\tfrac{1}{2}(\gamma-1)y},0},\\
+                    U(\tau, L) = e^{\tfrac{1}{2}(\gamma+1)L+\tfrac{1}{4}(\gamma+1)^2\tau}-e^{\tfrac{1}{2}(\gamma-1)L+\tfrac{1}{4}(\gamma-1)^2\tau},\\
+                    U(\tau, 0) = 0,
+                \end{cases}
+            \]
+            con
+            \[ \tau=\frac{1}{2}\sigma^2(T-t),\qquad y=\log\pp{\frac{x}{K}},
+            \qquad \gamma=\frac{2r}{\sigma^2}. \]
+            Recordemos que al Usar MDA no se usan las condiciones en la frontera
+            como en a), por lo cual se hace una modificación usando
+            \begin{align*}
+                U(\tau,y) &= u(\tau,y)+w(\tau,y),\\
+                w(\tau,y) &= U(0,y)+\pp{U(0,y)-U(\tau,L)}\pp{\frac{y-y_0}{L-y_0}}
+            \end{align*}
+            el problema se convierte en uno dónde las condiciones de frontera
+            son nulas, en este caso, se puede usar el ADM tradicional que usa
+            sólo la condición inicial:
+            \[
+                \begin{cases}
+                    u_t(\tau,y)=u_{xx}(\tau, y)-w_t(\tau,y),\quad y>0,
+                    ~\tau\in\cc{0,\tfrac{\sigma^2T}{2}},\\
+                    u(0,y) = u_0(y)-w(0,y),\\
+                    u(\tau,L)=0,\\
+                    u(\tau,0)=0,\quad \forall \tau >0,
+                \end{cases}
+            \]
+            con
+            \[ u_0(y) = \max\pp{e^{\tfrac{1}{2}(\gamma+1)y}-e^{\tfrac{1}{2}(\gamma-1)y}, 0}. \]
+            Con el ADM obtenemos:
+            \[ u(t)\approx\psi_k = \sum_{i=0}^{k-1}u_i(t). \]
+            La solución es
+            \[ C(t, x)=Ke^{-\tfrac{1}{2}(\gamma+1)x-\tfrac{1}{4}(\gamma-1)^{2}\tau}\pp{\psi_k+w(\tau,y)}. \]
+            Usa $r=0,05$, $\sigma=0.317$, $K=20$ y $T=0,25$ (3 meses), compara los resultados.
+
+        \end{enumerate}
     \end{enumerate}
 \end{document}
