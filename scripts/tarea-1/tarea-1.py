@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.animation import FuncAnimation
+# from mpl_toolkits.mplot3d import Axes3D
+# from matplotlib.animation import FuncAnimation
 
 ################################################################################
 #            PARAMETROS AJUSTABLES PARA LAS GRAFICAS Y ANIMACIONES
@@ -102,106 +102,12 @@ def print_solution_info(X, T, sol):
     print(f"\tShape of the solution: {sol.shape}" + "\n\n" + 80*"=")
 
 
-################################################################################
-#     FUNCIONES PARA VISUALIZAR LAS SOLUCIONES CALCULADAS DE LOS EJERCICIOS
-################################################################################
-
-def show_solution(X, T, U, title='Solucion', cmap='viridis'):
-    """  Muestra la solución calculada en tres formas: un gráfico 2D con mapa
-    de colores, un gráfico 3D de superficie, y una animación de la solución
-    como una barra de colores horizontal.
-     Parámetros:
-    - X, T: mallas 2D para x y t respectivamente (shape: (len(x), len(t)))
-    - U: solución calculada (shape: (len(x), len(t)))
-    - title: título general para la figura
-    - cmap: mapa de colores a usar para las gráficas
-    Retorna: im, surf, anim, cbar donde im es el objeto de la gráfica 2D, surf
-    es el objeto de la gráfica 3D, anim es el objeto de la animación, y cbar
-    es la colorbar. """
-    
-    fig = plt.figure(figsize=FIG_SIZE)
-    gs = fig.add_gridspec(1, 3, width_ratios=[1, 1.2, 1])   # 1 fila, 3 columnas
-    
-    # Grafica 2D
-    ax1 = fig.add_subplot(gs[0, 0])
-    im = create_2d_plot(X, T, U, ax1, cmap=cmap)
-    
-    # Grafica 3D
-    ax2 = fig.add_subplot(gs[0, 1], projection='3d')
-    surf = create_3d_plot(X, T, U, ax2, cmap=cmap)
-    
-    # Animacion 
-    ax3 = fig.add_subplot(gs[0, 2])
-    anim = create_animation(X, T, U, ax3, cmap=cmap)
-
-    # Crea la colorbar horizontal compartida por los tres ejes
-    cbar = fig.colorbar(im, ax=[ax1, ax2, ax3], orientation='horizontal',
-                        fraction=0.05, pad=0.05, label=r'$u(x,t)$')
-    
-    fig.suptitle(title)  # Título general para la figura
-    plt.show()
-
-    return im, surf, anim, cbar
-
-def create_2d_plot(X, T, U, ax, cmap):
-    """  Gráfico 2D con mapa de colores. El eje x representa x, el eje y
-    representa t, y el color representa u(x,t).
-    Parámetros:
-    - X, T: mallas 2D para x y t respectivamente (shape: (len(x), len(t)))
-    - U: solución calculada (shape: (len(x), len(t)))
-    - ax: objeto de eje de matplotlib donde se dibujará la gráfica
-    - cmap: mapa de colores a usar para la gráfica
-    Retorna: im, el objeto de la gráfica 2D. """
-    im = ax.pcolormesh(X, T, U, shading='auto', cmap=cmap)
-    ax.set_xlabel(r'$x$'); ax.set_ylabel(r'$t$')
-    return im
-
-def create_3d_plot(X, T, U, ax, cmap):
-    """ Gráfico 3D de superficie. El eje x representa x, el eje y representa t,
-    y el eje z representa u(x,t).
-    Parámetros:
-    - X, T: mallas 2D para x y t respectivamente (shape: (len(x), len(t)))
-    - U: solución calculada (shape: (len(x), len(t)))
-    - ax: objeto de eje de matplotlib donde se dibujará la gráfica
-    - cmap: mapa de colores a usar para la gráfica
-    Retorna: surf, el objeto de la gráfica 3D. """
-    surf = ax.plot_surface(X, T, U, cmap=cmap, linewidth=0, antialiased=True)
-    ax.set_xlabel(r'$x$'); ax.set_ylabel(r'$t$')
-    return surf
-
-def create_animation(X, T, U, ax, cmap):
-    x, t = X[:, 0], T[0, :]
-
-    # limpiar ejes
-    for place in ['top', 'right', 'left']: ax.spines[place].set_visible(False)
-    ax.set_xlabel(r'$x$'); ax.set_yticks([])
-
-    # imagen inicial
-    img_data = U[:, 0].reshape(1, -1)
-    im = ax.imshow(img_data, extent=[x.min(), x.max(), -0.05, 0.05],
-                   aspect='auto', origin='lower', cmap=cmap)
-    ax.set_ylim(-1, 1)
-    time_text = ax.text(0.35, 0.7, '', transform=ax.transAxes, fontsize=15)
-
-    def init():
-        im.set_array(U[:, 0].reshape(1, -1))
-        time_text.set_text(rf'$t={t[0]:.4f}$')
-        return [im, time_text]
-
-    def update(frame):
-        idx = frame % len(t)
-        im.set_array(U[:, idx].reshape(1, -1))
-        time_text.set_text(rf'$t={t[idx]:.4f}$')
-        return [im, time_text]
-
-    anim = FuncAnimation(ax.figure, update, frames=len(t), init_func=init,
-        interval=INTERVAL, repeat=REPEAT, blit=True)
-
-    return anim
-
 if __name__ == "__main__":
     """ Ejecuta los ejercicios de la tarea. Para cada ejercicio, se pueden
     ajustar los parámetros"""
+
+    from visualization.one_dimensional_time_eqs.complete_plot\
+        import show_solution
 
     ############################################################################
     #             PARAMETROS AJUSTABLES PARA LOS EJERCICIOS 
