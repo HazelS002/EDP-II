@@ -117,6 +117,12 @@
         \item Diseñar un algoritmo en Python que resuelva ecuaciones
         diferenciales con el método de Descomposición de Adomian en general.
 
+        \sol Se implemento un módulo en Python para el manejo de ecuaciones
+        diferenciales y sistemas de ecuaciones diferenciales, este es el módulo
+        \textit{eqsolver} dentro del repositorio de esta materia creado en la
+        Tarea 1. \href{https://github.com/HazelS002/EDP-II/tree/main}
+        {Consultar reposritorio aqui}\eej
+
         \item Con el algoritmo creado resolver los siguientes problemas, compara
         con las soluciones analiticas presentadas por Chen en 2004:
         \begin{enumerate}[(a)]
@@ -164,14 +170,17 @@
             \[ U_\tau = U_{yy}, \qquad y>0,~\tau>0. \]
             Y las condiciones inicial y de frontera se transforman en
             \[ \begin{cases}
-                    U(0,y) = \max\pp{e^{\frac{1}{2}(a+1)y} - e^{\frac{1}{2}(a-1)y},~0},\\
+                    U(0,y) = \max\pp{e^{\frac{1}{2}(a+1)y}
+                    -e^{\frac{1}{2}(a-1)y},~0},\\
                     U(\tau,0) = 0,\\
-                    U(\tau,L) = e^{\frac{1}{2}(a+1)L + \frac{1}{4}(a+1)^2\tau} - e^{\frac{1}{2}(a-1)L + \frac{1}{4}(a-1)^2\tau},
+                    U(\tau,L) = e^{\frac{1}{2}(a+1)L + \frac{1}{4}(a+1)^2\tau}
+                    -e^{\frac{1}{2}(a-1)L + \frac{1}{4}(a-1)^2\tau},
                 \end{cases} \]
             donde $L$ es un valor suficientemente grande para aproximar la
             condición en el infinito.
 
-            Dado que el MDA se aplica directamente a problemas con condiciones de Dirichlet homogéneas, se descompone
+            Dado que el MDA se aplica directamente a problemas con condiciones
+            de Dirichlet homogéneas, se descompone
             \[ U(\tau,y) = u(\tau,y) + w(\tau,y), \]
             con $w(\tau,y)$ elegida de modo que $u$ satisfaga condiciones nulas
             en los bordes. Tomamos
@@ -187,7 +196,8 @@
             Luego, definimos el operador integral
             \[ L^{-1} = \int_0^\tau (\cdot)\,d\tau'. \]
             Integrando la ecuación
-            \[ u(\tau,y) = u(0,y) - L^{-1}w_\tau + \int_0^\tau u_{yy}(s,y)ds = -L^{-1}w_\tau + \int_0^\tau u_{yy}(s,y)ds, \]
+            \[ u(\tau,y) = u(0,y) - L^{-1}w_\tau + \int_0^\tau u_{yy}(s,y)ds =
+            -L^{-1}w_\tau + \int_0^\tau u_{yy}(s,y)ds, \]
             ya que $u(0,y)=0$.
 
             Suponemos que
@@ -204,14 +214,17 @@
                 \item $u_0 = w(0,y)-w(\tau,y) = U(0,y)-w(\tau,y)$.
                 \item $u_1 = \int_0^\tau (u_0)_{yy}\,ds$.
                 \item Y en general, para $n\ge 1$,
-                \[ u_n(\tau,y) = \frac{\tau^n}{n!} \frac{\partial^{2n} u_0}{\partial y^{2n}}(0,y), \]
+                \[ u_n(\tau,y) = \frac{\tau^n}{n!}
+                \frac{\partial^{2n} u_0}{\partial y^{2n}}(0,y), \]
             \end{itemize}
             La aproximación de orden $k+1$ es
             \[ \psi_k(\tau,y) = \sum_{i=0}^{k} u_i(\tau,y) \approx u(\tau,y). \]
             Una vez obtenida $u(\tau,y)$ (aproximadamente), se reconstruye:
-            \[ U(\tau,y) = u(\tau,y) + w(\tau,y),\qquad V(\tau,y) = e^{-a y - b\tau} U(\tau,y), \]
+            \[ U(\tau,y) = u(\tau,y) + w(\tau,y),\qquad V(\tau,y)
+            = e^{-a y - b\tau} U(\tau,y), \]
             y finalmente el precio de la opción de compra
-            \[ C(t,x) = K e^{-\frac{1}{2}(a+1)y - \frac{1}{4}(a-1)^2\tau}\; U(\tau,y), \]
+            \[ C(t,x) = K e^{-\frac{1}{2}(a+1)y - \frac{1}{4}(a-1)^2\tau}
+            \;U(\tau,y), \]
             donde  $a = \dfrac{r}{\sigma^2}-\dfrac{1}{2}$.
 
 
@@ -220,8 +233,11 @@
                 \begin{cases}
                     U_t(\tau, y) = U_{xx}(\tau, y),\quad& y > 0,
                     \tau\in\cc{0, \tfrac{\sigma^2T}{2}},\\
-                    U(0, y) = \max\pp{e^{\tfrac{1}{2}(\gamma+1)y}-e^{\tfrac{1}{2}(\gamma-1)y},0},\\
-                    U(\tau, L) = e^{\tfrac{1}{2}(\gamma+1)L+\tfrac{1}{4}(\gamma+1)^2\tau}-e^{\tfrac{1}{2}(\gamma-1)L+\tfrac{1}{4}(\gamma-1)^2\tau},\\
+                    U(0, y) = \max\pp{e^{\tfrac{1}{2}(\gamma+1)y}
+                    -e^{\tfrac{1}{2}(\gamma-1)y},0},\\
+                    U(\tau, L) = e^{\tfrac{1}{2}(\gamma+1)L+\tfrac{1}{4}
+                    (\gamma+1)^2\tau}-e^{\tfrac{1}{2}(\gamma-1)L
+                    +\tfrac{1}{4}(\gamma-1)^2\tau},\\
                     U(\tau, 0) = 0,
                 \end{cases}
             \]
@@ -232,7 +248,8 @@
             como en a), por lo cual se hace una modificación usando
             \begin{align*}
                 U(\tau,y) &= u(\tau,y)+w(\tau,y),\\
-                w(\tau,y) &= U(0,y)+\pp{U(0,y)-U(\tau,L)}\pp{\frac{y-y_0}{L-y_0}}
+                w(\tau,y) &= U(0,y)+\pp{U(0,y)-U(\tau,L)}
+                \pp{\frac{y-y_0}{L-y_0}}
             \end{align*}
             el problema se convierte en uno dónde las condiciones de frontera
             son nulas, en este caso, se puede usar el ADM tradicional que usa
@@ -247,12 +264,15 @@
                 \end{cases}
             \]
             con
-            \[ u_0(y) = \max\pp{e^{\tfrac{1}{2}(\gamma+1)y}-e^{\tfrac{1}{2}(\gamma-1)y}, 0}. \]
+            \[ u_0(y) = \max\pp{e^{\tfrac{1}{2}(\gamma+1)y}
+            -e^{\tfrac{1}{2}(\gamma-1)y}, 0}. \]
             Con el ADM obtenemos:
             \[ u(t)\approx\psi_k = \sum_{i=0}^{k-1}u_i(t). \]
             La solución es
-            \[ C(t, x)=Ke^{-\tfrac{1}{2}(\gamma+1)x-\tfrac{1}{4}(\gamma-1)^{2}\tau}\pp{\psi_k+w(\tau,y)}. \]
-            Usa $r=0,05$, $\sigma=0.317$, $K=20$ y $T=0,25$ (3 meses), compara los resultados.
+            \[ C(t, x)=Ke^{-\tfrac{1}{2}(\gamma+1)x
+            -\tfrac{1}{4}(\gamma-1)^{2}\tau}\pp{\psi_k+w(\tau,y)}. \]
+            Usa $r=0,05$, $\sigma=0.317$, $K=20$ y $T=0,25$ (3 meses), compara
+            los resultados.
 
         \end{enumerate}
     \end{enumerate}
