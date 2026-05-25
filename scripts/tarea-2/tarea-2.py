@@ -153,13 +153,14 @@ def equation_e():
         # Añadir el modo a la solución
         u_approx += T_series * sp.sin(n*x)
 
+    u_approx = sp.sympify(u_approx)
     sp.pprint(u_approx)
     
-    return sp.simplify(u_approx)
+    return u_approx
     
 if __name__ == "__main__":
-    from eqsolver import Equation, Condition, AdomianMethod,\
-        SystemEquation, AdomianSystemSolver
+    from eqsolver import Equation, SystemEquation, Condition,\
+        AdomianMethod, AdomianSystemSolver
     import sympy as sp
 
     equation_a()
