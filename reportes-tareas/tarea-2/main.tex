@@ -143,6 +143,38 @@
             \end{align*}
         \end{enumerate}
 
+        \sol Para las primeras cuatro ecuaciones podemos aplicar directamente
+        los algoritmos implementados y obtenemos resultados similares a Chen
+        2004. Para la ecuación (e), sabemos que el conjunto
+        \(\{\sin(nx)\}_{n=1}^{\infty}\) es una base ortogonal de \(L^2(0,\pi)\)
+        con las condiciones de contorno dadas. Por tanto, la solución se puede
+        escribir como
+        \[ u(x,t) = \sum_{n=1}^{\infty} T_n(t) \sin(nx). \]
+        Sustituyendo en la ecuación
+        \[ \sum_{n=1}^{\infty} \pp{T_n''(t) \sin(nx) - T_n(t)
+        \frac{\partial^2}{\partial x^2} \sin(nx)} = 0. \]
+        Como \(\frac{\partial^2}{\partial x^2} \sin(nx) = -n^2 \sin(nx)\), se
+        obtiene
+        \[ \sum_{n=1}^{\infty} \pp{T_n''(t) + n^2 T_n(t)} \sin(nx) = 0. \]
+        Por la independencia lineal de los senos, cada coeficiente debe anularse
+        \[T_n''(t) + n^2 T_n(t) = 0, \quad \forall n. \]
+        Expandiendo las condiciones iniciales en la misma base tenemos
+        \[ \begin{cases}
+            u(x,0) = \sin^3(x) = \frac{3}{4}\sin(x) - \frac{1}{4}\sin(3x),\\
+            u_t(x,0) = \sin(2x)
+        \end{cases} \]
+        Comparando con \(u(x,0) = \sum T_n(0)\sin(nx)\) y
+        \(u_t(x,0) = \sum T_n'(0)\sin(nx)\), se tiene
+        \[ T_1(0) = \frac{3}{4},\quad T_3(0)=-\frac{1}{4},\quad T_2'(0) = 1,\]
+        y \(T_n(0)=0\) y \(T_n'(0)=0\) para los demás \(n\).
+        
+        Cada EDO es lineal de segundo orden
+        \[ T_n''(t) + n^2 T_n(t) = 0,\quad T_n(0)=a_n,\; T_n'(0)=b_n, \]
+        y se escriben en la forma \(L(T_n) + R(T_n) + N(T_n) = g\), donde
+        \[L = d^2/dt^2,\quad R = n^2 I,\quad N=0,\quad g=0.\]
+        Para cada $n$ podemos aplicar el algoritmo para obtener la solución.\eej
+
+
         \item Resolver los problemas de Black-Scholes:
         \begin{enumerate}[(a)]
             \item \[

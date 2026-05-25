@@ -123,8 +123,8 @@ def equation_e():
     # Condiciones iniciales expandidas en series de Fourier
     # sin^3(x) = (3/4) sin(x) - (1/4) sin(3x)
     # sin(2x) ya está en la base
-    a = {1: sp.Rational(3,4), 3: sp.Rational(-1,4)}   # coeficientes para u(x,0)
-    b = {2: 1}                                         # coeficientes para u_t(x,0)
+    a = {1: sp.Rational(3,4), 3: sp.Rational(-1,4)}  # coeficientes para u(x,0)
+    b = {2: 1}                                     # coeficientes para u_t(x,0)
     
     u_approx = 0
     # Para cada modo n que tenga coeficiente no nulo hasta n_max
