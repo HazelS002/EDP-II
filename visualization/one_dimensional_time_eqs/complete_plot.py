@@ -1,7 +1,6 @@
 from ..utils.builders import create_2d_plot, create_3d_plot, create_animation
+from ..config import FIG_KWARGS
 from matplotlib import pyplot as plt
-
-FIG_SIZE = (10, 4)
 
 def show_solution(X, T, U, title='Solucion', cmap='viridis'):
     """  Muestra la solución calculada en tres formas: un gráfico 2D con mapa
@@ -16,7 +15,7 @@ def show_solution(X, T, U, title='Solucion', cmap='viridis'):
     es el objeto de la gráfica 3D, anim es el objeto de la animación, y cbar
     es la colorbar. """
     
-    fig = plt.figure(figsize=FIG_SIZE)
+    fig = plt.figure(**FIG_KWARGS)
     gs = fig.add_gridspec(1, 3, width_ratios=[1, 1.2, 1])   # 1 fila, 3 columnas
     
     # Grafica 2D

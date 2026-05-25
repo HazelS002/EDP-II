@@ -1,9 +1,8 @@
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
+from ..config import REPEAT
 
-INTERVAL = 100
-REPEAT = True
 
 def create_2d_plot(X, T, U, ax, cmap):
     """  Gráfico 2D con mapa de colores. El eje x representa x, el eje y
@@ -31,7 +30,7 @@ def create_3d_plot(X, T, U, ax, cmap):
     ax.set_xlabel(r'$x$'); ax.set_ylabel(r'$t$')
     return surf
 
-def create_animation(X, T, U, ax, cmap):
+def create_animation(X, T, U, ax, cmap, interval=100):
     x, t = X[:, 0], T[0, :]
 
     # limpiar ejes
@@ -57,7 +56,7 @@ def create_animation(X, T, U, ax, cmap):
         return [im, time_text]
 
     anim = FuncAnimation(ax.figure, update, frames=len(t), init_func=init,
-        interval=INTERVAL, repeat=REPEAT, blit=True)
+        interval=interval, repeat=REPEAT, blit=True)
 
     return anim
 
