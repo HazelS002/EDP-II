@@ -149,6 +149,72 @@
                 \end{cases}
             \]
 
+            \sol Se introducen los siguientes cambios de variable 
+            \[ \tau = \frac{1}{2}\sigma^2 (T-t),\quad y = \log\pp{\frac{x}{K}},
+            \quad C(t,x) = K\,V(\tau,y). \]
+            Sustituyendo en la ecuación original tenemos
+            \[ -V_\tau + V_{yy} + \pp{\frac{2r}{\sigma^2}-1}V_y =
+            \frac{2r}{\sigma^2} V. \]
+            Definimos
+            \[ a = \frac{1}{2}\pp{\frac{2r}{\sigma^2}-1} = \frac{r}{\sigma^2}
+            -\frac{1}{2},\qquad b = (1+a)^2. \]
+            Mediante la transformación 
+            \[ U(\tau,y) = e^{a y + b\tau}\, V(\tau,y), \]
+            la ecuación se reduce a la ecuación del calor
+            \[ U_\tau = U_{yy}, \qquad y>0,~\tau>0. \]
+            Y las condiciones inicial y de frontera se transforman en
+            \[ \begin{cases}
+                    U(0,y) = \max\pp{e^{\frac{1}{2}(a+1)y} - e^{\frac{1}{2}(a-1)y},~0},\\
+                    U(\tau,0) = 0,\\
+                    U(\tau,L) = e^{\frac{1}{2}(a+1)L + \frac{1}{4}(a+1)^2\tau} - e^{\frac{1}{2}(a-1)L + \frac{1}{4}(a-1)^2\tau},
+                \end{cases} \]
+            donde $L$ es un valor suficientemente grande para aproximar la
+            condición en el infinito.
+
+            Dado que el MDA se aplica directamente a problemas con condiciones de Dirichlet homogéneas, se descompone
+            \[ U(\tau,y) = u(\tau,y) + w(\tau,y), \]
+            con $w(\tau,y)$ elegida de modo que $u$ satisfaga condiciones nulas
+            en los bordes. Tomamos
+            \[ w(\tau,y) = U(0,y) + \pp{U(0,y)-U(\tau,L)}\frac{y}{L}. \]
+            Se tiene que
+            \[ w(\tau,0)=U(0,0)=0,\qquad w(\tau,L)=U(\tau,L). \]
+            Se obtiene el problema para $u$
+            \[ \begin{cases}
+                u_\tau = u_{yy} - w_\tau, & y\in(0,L),~\tau>0,\\
+                u(0,y) = U(0,y)-w(0,y)=0,&\\
+                u(\tau,0)= u(\tau,L)=0.&
+            \end{cases} \]
+            Luego, definimos el operador integral
+            \[ L^{-1} = \int_0^\tau (\cdot)\,d\tau'. \]
+            Integrando la ecuación
+            \[ u(\tau,y) = u(0,y) - L^{-1}w_\tau + \int_0^\tau u_{yy}(s,y)ds = -L^{-1}w_\tau + \int_0^\tau u_{yy}(s,y)ds, \]
+            ya que $u(0,y)=0$.
+
+            Suponemos que
+            \[ u(\tau,y) = \sum_{i=0}^\infty u_i(\tau,y). \]
+            Sustituyendo y usando la linealidad del operador, se obtiene
+            la recurrencia de Adomian para un problema lineal
+            \begin{align}
+                u_0(\tau,y) &= -L^{-1}w_\tau(\tau,y),\\
+                u_{n+1}(\tau,y) &= \int_0^\tau \frac{\partial^2}{\partial y^2}
+                u_n(s,y)ds, \qquad n\ge 0.
+            \end{align}
+            Los términos se calculan explícitamente:
+            \begin{itemize}
+                \item $u_0 = w(0,y)-w(\tau,y) = U(0,y)-w(\tau,y)$.
+                \item $u_1 = \int_0^\tau (u_0)_{yy}\,ds$.
+                \item Y en general, para $n\ge 1$,
+                \[ u_n(\tau,y) = \frac{\tau^n}{n!} \frac{\partial^{2n} u_0}{\partial y^{2n}}(0,y), \]
+            \end{itemize}
+            La aproximación de orden $k+1$ es
+            \[ \psi_k(\tau,y) = \sum_{i=0}^{k} u_i(\tau,y) \approx u(\tau,y). \]
+            Una vez obtenida $u(\tau,y)$ (aproximadamente), se reconstruye:
+            \[ U(\tau,y) = u(\tau,y) + w(\tau,y),\qquad V(\tau,y) = e^{-a y - b\tau} U(\tau,y), \]
+            y finalmente el precio de la opción de compra
+            \[ C(t,x) = K e^{-\frac{1}{2}(a+1)y - \frac{1}{4}(a-1)^2\tau}\; U(\tau,y), \]
+            donde  $a = \dfrac{r}{\sigma^2}-\dfrac{1}{2}$.
+
+
             \item Consideremos el problema:
             \[
                 \begin{cases}
