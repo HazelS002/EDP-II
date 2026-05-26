@@ -1,10 +1,10 @@
-# 📘 Ecuaciones Diferenciales Parciales II (EDP II)
+# Ecuaciones Diferenciales Parciales II (EDP II)
 
 Repositorio dedicado al estudio, implementación y simulación de
 **Ecuaciones Diferenciales Parciales (EDP)**, incluyendo desarrollo teórico y
 práctico, resolución analítica y métodos numéricos.
 
-## 📌 Objetivo
+## Objetivo
 
 Este repositorio tiene como propósito:
 
@@ -15,20 +15,31 @@ Este repositorio tiene como propósito:
 
 ---
 
-## 🧠 Contenido
+## Contenido
 
 El proyecto está estructurado de la siguiente manera:
 
 ```
 EDP-II
-├───reportes-tareas
+├───eqsolver
+│   ├───core
+│   ├───methods
+│   │   └───adomian
+│   ├───tests
+│   └───utils
+|
+├───reports
 │   ├───tarea-1
 │   │   └───figures
 │   └───tarea-2
-└───scripts
-    ├───tarea-1
-    │   └───figures
-    └───tarea-2
+│       └───figures
+|
+├───scripts
+|
+└───visualization
+    ├───one_dimensional_time_eqs
+    ├───two_dimensional_time_eqs
+    └───utils
 ```
 
 ## Instalación y Configuración
@@ -56,13 +67,12 @@ conda activate math
 
 Para compilar el archivo _tex_ a _pdf_ de la tarea $n$:
 ```bash
-cd "reportes-tareas/tarea-<n>/"
+cd "reports/tarea-<n>/"
 pdflatex main.tex
 ```
 
 ### Ejecutar scripts de Python
 Para ejecutar el script de la tarea $n$:
 ```bash
-cd "scripts/tarea-<n>/"
-python tarea-<n>.py    # (requiere pdflatex)
+python -m scripts.tarea-<n>    # (requiere pdflatex)
 ```
