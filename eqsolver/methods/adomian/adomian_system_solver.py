@@ -13,9 +13,10 @@ class AdomianSystemSolver(Solver):
         self.n_terms = n_terms
         self.simplify = simplify
 
-    def _replace_dep_vars(self, expr: Expr, u_map: Dict[Function, Expr], time_var: Symbol) -> Expr:
-        if isinstance(expr, Function) and expr in u_map:
-            return u_map[expr]
+    def _replace_dep_vars(self, expr: Expr, u_map: Dict[Function, Expr],
+                          time_var: Symbol) -> Expr:
+        if isinstance(expr, Function) and expr in u_map: return u_map[expr]
+
         if isinstance(expr, Derivative):
             if expr.expr in u_map:
                 new_base = u_map[expr.expr]
@@ -23,9 +24,11 @@ class AdomianSystemSolver(Solver):
                     new_base = sp.Derivative(new_base, var)
                 return new_base
             else:
-                return expr.func(*[self._replace_dep_vars(arg, u_map, time_var) for arg in expr.args])
+                return expr.func(*[self._replace_dep_vars(arg, u_map, time_var)\
+                                   for arg in expr.args])
         if hasattr(expr, 'args') and expr.args:
-            return expr.func(*[self._replace_dep_vars(arg, u_map, time_var) for arg in expr.args])
+            return expr.func(*[self._replace_dep_vars(arg, u_map, time_var)\
+                               for arg in expr.args])
         return expr
 
     def solve(self, system: SystemEquation, **kwargs) -> List[Expr]:
@@ -37,26 +40,24 @@ class AdomianSystemSolver(Solver):
             raise ValueError("No se pudo determinar la variable temporal.")
         conditions = system.all_conditions
 
-        # Determinar el orden temporal (asumimos que todas las ecuaciones tienen el mismo orden)
         orders = [eq.get_order() for eq in eqs]
         if len(set(orders)) != 1:
-            # Si no son iguales, tomamos el máximo y ajustamos (pero aquí forzamos igualdad)
-            raise ValueError("Todas las ecuaciones deben tener el mismo orden temporal.")
+            raise ValueError("Las ecuaciones deben tener mismo orden temporal.")
         order = orders[0]
 
         point = get_base_point(conditions, default=0)
-        if isinstance(point, dict):
-            point = point.get(time_var, 0)
+        if isinstance(point, dict): point = point.get(time_var, 0)
 
         # Tomamos la primera ecuación para construir L_inverse (asumimos que L es d^order/dt^order)
         L0 = eqs[0].L
-        L_inverse = inverse_operator(L0, dep_vars[0], var, order, conditions, time_var)
+        L_inverse = inverse_operator(L0, dep_vars[0], var, order,
+                                     conditions, time_var)
 
         # Extraer condiciones iniciales por variable
         init_vals = {dv: {} for dv in dep_vars}
         for cond in conditions:
-            if not cond.is_initial:
-                continue
+            if not cond.is_initial: continue
+
             for dv in dep_vars:
                 if cond.var == dv:
                     init_vals[dv][0] = cond.value
@@ -72,11 +73,10 @@ class AdomianSystemSolver(Solver):
         for dv in dep_vars:
             C_syms = []
             for k in range(order):
-                if spatial_vars:
-                    Ck = sp.Function(f'C_{dv.name}_{k}')(*spatial_vars)
-                else:
-                    Ck = sp.Symbol(f'C_{dv.name}_{k}')
+                Ck = sp.Function(f'C_{dv.name}_{k}')(*spatial_vars)\
+                    if spatial_vars else sp.Symbol(f'C_{dv.name}_{k}')
                 C_syms.append(Ck)
+
             phi = sum(C_syms[k] * (time_var - point)**k for k in range(order))
             eqs_cond = []
             for k in range(order):
@@ -92,8 +92,7 @@ class AdomianSystemSolver(Solver):
         for idx, eq in enumerate(eqs):
             dv = dep_vars[idx]
             u0 = phi_dict[dv] + L_inverse(eq.g)
-            if self.simplify:
-                u0 = sp.simplify(u0)
+            if self.simplify: u0 = sp.simplify(u0)
             components[dv].append(u0)
 
         # Recursión
@@ -102,30 +101,31 @@ class AdomianSystemSolver(Solver):
             for idx, eq in enumerate(eqs):
                 dv = dep_vars[idx]
                 # Mapa de sustitución para R: usamos u_{m-1} de cada variable
-                subst_map = {dvi: comps[m-1] for dvi, comps in components.items() if m-1 < len(comps)}
+                subst_map = {dvi: comps[m-1] for dvi, comps\
+                             in components.items() if m-1 < len(comps)}
                 R_um = self._replace_dep_vars(eq.R, subst_map, time_var)
 
                 # Polinomio de Adomian para N
-                comps_dict = {dvi: comps_i for dvi, comps_i in components.items()}
+                comps_dict = {dvi: comps_i for dvi, comps_i\
+                              in components.items()}
                 if eq.N != sp.S(0):
-                    A = AdomianPolynomialsSystem.compute(eq.N, comps_dict, m-1, dep_vars)
+                    A = AdomianPolynomialsSystem.compute(eq.N, comps_dict,\
+                                                         m-1, dep_vars) 
                 else:
                     A = sp.S(0)
 
                 term1 = L_inverse(R_um)
                 term2 = L_inverse(A)
                 u_m = -term1 - term2
-                if self.simplify:
-                    u_m = sp.simplify(u_m)
+                if self.simplify: u_m = sp.simplify(u_m)
                 u_next[dv] = u_m
-            for dv, u_m in u_next.items():
-                components[dv].append(u_m)
+
+            for dv, u_m in u_next.items(): components[dv].append(u_m)
 
         # Soluciones finales
         solutions = []
         for dv in dep_vars:
             sol = sum(components[dv])
-            if self.simplify:
-                sol = sp.simplify(sol)
+            if self.simplify: sol = sp.simplify(sol)
             solutions.append(sol)
         return solutions

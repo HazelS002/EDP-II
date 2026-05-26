@@ -1,5 +1,6 @@
 """
-Funciones auxiliares para manipulación simbólica: integrales definidas, inversa de operadores, etc.
+Funciones auxiliares para manipulación simbólica: integrales definidas,
+inversa de operadores, etc.
 """
 
 import sympy as sp
@@ -8,33 +9,33 @@ from typing import List, Union, Dict, Optional
 from ..core.equation import Condition
 
 
-def inverse_operator(L_expr: sp.Expr, dep_var: Function, variables: List[Symbol],
-                     order: int, conditions: List[Condition], time_var: Symbol = None):
+def inverse_operator(L_expr: sp.Expr, dep_var: Function, variables:\
+                     List[Symbol], order: int, conditions: List[Condition],\
+                        time_var: Symbol = None):
     """
-    Construye la inversa del operador L, asumiendo que L es d^m/dt^m (derivada pura respecto al tiempo).
+    Construye la inversa del operador L, asumiendo que L es d^m/dt^m (derivada
+    pura respecto al tiempo).
     Para EDOs, variables es [t]; para EDPs, la inversa solo integra en tiempo.
-    conditions: lista de Condition con is_initial=True, que definen el punto base t0.
+    conditions: lista de Condition con is_initial=True, que definen el punto
+    base t0.
     Retorna una función que aplica la inversa a una expresión f.
     """
     # Determinar variable temporal
     if time_var is None:
-        if len(variables) == 1:
-            time_var = variables[0]
+        if len(variables) == 1: time_var = variables[0]
         else:
-            # Buscar la variable respecto a la cual L deriva (suponemos que es la primera derivada encontrada)
             for arg in sp.preorder_traversal(L_expr):
                 if isinstance(arg, Derivative) and arg.expr == dep_var:
                     time_var = arg.variables[0]
                     break
             if time_var is None:
-                raise ValueError("No se pudo determinar la variable temporal en L.")
+                raise ValueError("No se pudo determinar la variable temporal.")
 
     # Extraer punto base de las condiciones iniciales
     init_conds = [c for c in conditions if c.is_initial]
     if init_conds:
         point = init_conds[0].at_point
-        if isinstance(point, dict):
-            point = point.get(time_var, 0)
+        if isinstance(point, dict): point = point.get(time_var, 0)
     else:
         point = 0
 
@@ -51,8 +52,9 @@ def inverse_operator(L_expr: sp.Expr, dep_var: Function, variables: List[Symbol]
 def integrate_with_conditions(expr: sp.Expr, var: Symbol, order: int,
                               conditions: List[Condition]) -> sp.Expr:
     """
-    Integra expr order veces respecto a var, y luego determina las constantes de integración
-    usando las condiciones dadas (deben ser condiciones iniciales en el punto base).
+    Integra expr order veces respecto a var, y luego determina las constantes
+    de integración usando las condiciones dadas (deben ser condiciones iniciales
+    en el punto base).
     Retorna la primitiva que satisface las condiciones.
     """
     # Realizar integrales indefinidas
@@ -65,8 +67,7 @@ def integrate_with_conditions(expr: sp.Expr, var: Symbol, order: int,
         result = result + Ci
 
     # Si no hay condiciones, devolver con constantes
-    if not conditions:
-        return result
+    if not conditions: return result
 
     # Extraer punto base
     point = conditions[0].at_point
@@ -77,8 +78,8 @@ def integrate_with_conditions(expr: sp.Expr, var: Symbol, order: int,
     # Construir ecuaciones
     eqs = []
     for cond in conditions:
-        if not cond.is_initial:
-            continue
+        if not cond.is_initial: continue
+
         # Determinar orden de derivada
         if cond.var == cond.var.func:
             deriv_order = 0
@@ -102,8 +103,7 @@ def apply_initial_conditions(expr: sp.Expr, var: Symbol, conditions: List[Condit
     aplica las condiciones iniciales para determinar las constantes.
     """
     free_syms = [s for s in expr.free_symbols if str(s).startswith('C')]
-    if not free_syms:
-        return expr
+    if not free_syms: return expr
 
     eqs = []
     for cond in conditions:
@@ -119,7 +119,6 @@ def apply_initial_conditions(expr: sp.Expr, var: Symbol, conditions: List[Condit
             continue
         eqs.append(Eq(expr_eval, cond.value))
 
-    if not eqs:
-        return expr
+    if not eqs: return expr
     sol = solve(eqs, free_syms)
     return expr.subs(sol)

@@ -36,5 +36,5 @@ class AdomianPolynomialsSystem:
 
     @staticmethod
     def compute_sequence(N_expr, u_components_dict, max_n, dep_vars):
-        return [AdomianPolynomialsSystem.compute(N_expr, u_components_dict, n, dep_vars)
-                for n in range(max_n + 1)]
+        return [AdomianPolynomialsSystem.compute(N_expr, u_components_dict,\
+                                    n, dep_vars) for n in range(max_n + 1)]

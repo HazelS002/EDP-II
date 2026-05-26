@@ -13,9 +13,11 @@ class Solver(ABC):
     @abstractmethod
     def solve(self, equation: Equation, **kwargs) -> Any:
         """
-        Resuelve la ecuación diferencial y retorna la solución (simbólica, numérica, serie, etc.)
+        Resuelve la ecuación diferencial y retorna la solución (simbólica,
+        numérica, serie, etc.)
         equation: instancia de Equation
-        kwargs: parámetros específicos del método (número de términos, tolerancia, etc.)
+        kwargs: parámetros específicos del método (número de términos,
+        tolerancia, etc.)
         """
         pass
 

@@ -23,18 +23,19 @@ class AdomianMethod(Solver):
 
     def _replace_dep_var(self, expr, u_expr, dep_var, time_var):
         """Reemplaza la función dependiente y sus derivadas por u_expr."""
-        if expr == dep_var:
-            return u_expr
+        if expr == dep_var: return u_expr
+
         if isinstance(expr, Derivative):
             if expr.expr == dep_var:
                 new_expr = u_expr
-                for v in expr.variables:
-                    new_expr = sp.Derivative(new_expr, v)
+                for v in expr.variables: new_expr = sp.Derivative(new_expr, v)
                 return new_expr
             else:
-                return expr.func(*[self._replace_dep_var(arg, u_expr, dep_var, time_var) for arg in expr.args])
+                return expr.func(*[self._replace_dep_var(arg, u_expr, dep_var,\
+                                                time_var) for arg in expr.args])
         if hasattr(expr, 'args') and expr.args:
-            return expr.func(*[self._replace_dep_var(arg, u_expr, dep_var, time_var) for arg in expr.args])
+            return expr.func(*[self._replace_dep_var(arg, u_expr, dep_var,\
+                                            time_var) for arg in expr.args])
         return expr
 
     def solve(self, equation: Equation, **kwargs) -> sp.Expr:
@@ -47,10 +48,8 @@ class AdomianMethod(Solver):
         dep_var = equation.dep_var
         conditions = equation.conditions
 
-        if N == 0:
-            N = sp.S(0)
-        if g == 0:
-            g = sp.S(0)
+        if N == 0: N = sp.S(0)
+        if g == 0: g = sp.S(0)
 
         # Determinar variable temporal y orden de L
         time_var = None
@@ -65,11 +64,11 @@ class AdomianMethod(Solver):
 
         # Punto base
         point = get_base_point(conditions, default=0)
-        if isinstance(point, dict):
-            point = point.get(time_var, 0)
+        if isinstance(point, dict): point = point.get(time_var, 0)
 
         # Inversa de L
-        L_inverse = inverse_operator(L, dep_var, variables, order, conditions, time_var)
+        L_inverse = inverse_operator(L, dep_var, variables, order,
+                                     conditions, time_var)
 
         # Extraer valores iniciales
         init_vals = {}
@@ -77,7 +76,8 @@ class AdomianMethod(Solver):
             if cond.is_initial:
                 if cond.var == dep_var:
                     dorder = 0
-                elif isinstance(cond.var, Derivative) and cond.var.expr == dep_var:
+                elif isinstance(cond.var, Derivative) and cond.var.expr\
+                    == dep_var:
                     dorder = len(cond.var.variables)
                 else:
                     continue
@@ -87,10 +87,8 @@ class AdomianMethod(Solver):
         spatial_vars = [v for v in variables if v != time_var]
         C_symbols = []
         for k in range(order):
-            if spatial_vars:
-                Ck = sp.Function(f'C{k}')(*spatial_vars)
-            else:
-                Ck = sp.Symbol(f'C{k}')
+            if spatial_vars: Ck = sp.Function(f'C{k}')(*spatial_vars)
+            else: Ck = sp.Symbol(f'C{k}')
             C_symbols.append(Ck)
         phi = sum(C_symbols[k] * (time_var - point)**k for k in range(order))
         eqs = []
@@ -104,26 +102,25 @@ class AdomianMethod(Solver):
 
         # u0
         u0 = phi + L_inverse(g)
-        if self.simplify:
-            u0 = sp.simplify(u0)
+        if self.simplify: u0 = sp.simplify(u0)
         u_components = [u0]
 
         # Recursión
         for m in range(1, self.n_terms):
-            R_um = self._replace_dep_var(R, u_components[m-1], dep_var, time_var)
+            R_um = self._replace_dep_var(R,u_components[m-1],dep_var,time_var)
             if N != sp.S(0):
-                A_m1 = AdomianPolynomialsCalculator.compute(N, u_components, m-1, dep_var)
+                A_m1 = AdomianPolynomialsCalculator.compute(N, u_components,
+                                                             m-1, dep_var)
             else:
                 A_m1 = sp.S(0)
             term1 = L_inverse(R_um)
             term2 = L_inverse(A_m1)
             u_m = -term1 - term2
-            if self.simplify:
-                u_m = sp.simplify(u_m)
+
+            if self.simplify: u_m = sp.simplify(u_m)
             u_components.append(u_m)
 
         # Suma final
         approx = sum(u_components)
-        if self.simplify:
-            approx = sp.simplify(approx)
+        if self.simplify: approx = sp.simplify(approx)
         return approx

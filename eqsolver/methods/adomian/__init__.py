@@ -3,4 +3,7 @@ from .adomian_system_solver import AdomianSystemSolver
 from .adomian_polynomials import AdomianPolynomialsCalculator
 from .adomian_polynomials_system import AdomianPolynomialsSystem
 
-__all__ = ["AdomianMethod", "AdomianSystemSolver", "AdomianPolynomialsCalculator", "AdomianPolynomialsSystem"]
+__all__ = [
+    "AdomianMethod", "AdomianSystemSolver", "AdomianPolynomialsCalculator",
+    "AdomianPolynomialsSystem"
+]

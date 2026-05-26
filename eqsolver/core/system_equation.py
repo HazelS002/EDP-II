@@ -21,7 +21,7 @@ class SystemEquation:
             vars0 = equations[0].var
             for eq in equations[1:]:
                 if eq.var != vars0:
-                    raise ValueError("Todas las ecuaciones deben tener las mismas variables independientes.")
+                    raise ValueError("Distintas variables independientes.")
             self.var = vars0
 
         # Determinar variable temporal (la primera que aparezca en derivadas)
@@ -29,16 +29,13 @@ class SystemEquation:
         for eq in equations:
             tv = eq.get_time_variable()
             if tv is not None:
-                self.time_var = tv
-                break
+                self.time_var = tv ; break
 
         # Reunir todas las condiciones (globales + las de cada ecuación)
         self.all_conditions = self.conditions[:]
-        for eq in equations:
-            self.all_conditions.extend(eq.conditions)
+        for eq in equations: self.all_conditions.extend(eq.conditions)
 
-    def __len__(self):
-        return len(self.equations)
+    def __len__(self): return len(self.equations)
 
     def __repr__(self):
         return f"SystemEquation({len(self.equations)} equations, vars={self.var})"
