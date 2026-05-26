@@ -1,21 +1,28 @@
 # eqsolver
 
-Módulo de Python para la resolución simbólica de ecuaciones diferenciales ordinarias (EDOs) y parciales (EDPs) mediante el **método de descomposición de Adomian (ADM)**. Actualmente soporta problemas de valor inicial (condiciones iniciales en el tiempo) y se encuentra en extensión para sistemas de ecuaciones.
+Módulo de Python para la resolución simbólica de ecuaciones diferenciales
+ordinarias (EDOs) y parciales (EDPs) mediante el
+**método de descomposición de Adomian (ADM)**. Actualmente soporta problemas de
+valor inicial (condiciones iniciales en el tiempo) y sistemas de ecuaciones.
 
 ---
 
 ## Características principales
 
-- **Simbólico**: utiliza `sympy` para obtener expresiones exactas en forma de series.
+- **Simbólico**: utiliza `sympy` para obtener expresiones exactas en forma de 
+  series.
 - **Descomposición explícita**: el usuario debe proporcionar la ecuación en la forma  
   `L(u) + R(u) + N(u) = g`, donde:
   - `L` es el operador lineal invertible (típicamente la derivada temporal de mayor orden).
   - `R` es el resto lineal (términos lineales de orden inferior).
   - `N` es el término no lineal (puede incluir derivadas).
   - `g` es el término fuente.
-- **Manejo de EDOs y EDPs**: soporta una variable independiente (EDO) o varias (EDP), siempre que la evolución sea temporal.
-- **Condiciones iniciales**: se especifican en un punto base (generalmente `t=0`).
-- **Sistemas de ecuaciones** (experimental): resuelve sistemas acoplados mediante `AdomianSystemSolver`.
+- **Manejo de EDOs y EDPs**: soporta una variable independiente (EDO) o varias
+  (EDP), siempre que la evolución sea temporal.
+- **Condiciones iniciales**: se especifican en un punto base
+  (generalmente `t=0`).
+- **Sistemas de ecuaciones**: resuelve sistemas acoplados mediante
+  `AdomianSystemSolver`.
 
 ---
 
@@ -36,7 +43,8 @@ eqsolver/
 ├── utils/
 │   ├── symbolic_helpers.py   # Inversa de operadores, integración con condiciones
 │   └── conditions.py         # Manejo de condiciones iniciales
-└── __init__.py
+├── __init__.py 
+└── README.md
 ```
 
 ---
