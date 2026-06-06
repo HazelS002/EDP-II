@@ -1,9 +1,6 @@
-from heateq.findiffs.solver import solveEq
-from heateq.findiffs.periodic_solver import solvePeriodicEq
-from heateq.conditions.dirichlet import dirichletCondition
-from heateq.conditions.neumann import neumannCondition
-from heateq.conditions.periodic import periodicCondition
-from heateq.utils.helpers import create_mesh
+from heateq.findiffs import *
+from heateq.conditions import *
+from heateq.utils import create_mesh
 
 from visualization.one_dimensional_time_eqs.complete_plot import show_solution
 
