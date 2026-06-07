@@ -9,9 +9,6 @@ dependencies:
   - mkl
   - sympy
   - matplotlib
-  - pyamg
-  - pip
-  - pip:
-    - scikit-fem
-    - pygmsh
-    - meshio
+  - fenics-dolfinx   # 
+  - gmsh             # Alternativa a mshr
+  - pyvista          # Para visualización en Windows
