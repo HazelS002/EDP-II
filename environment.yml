@@ -1,16 +1,17 @@
-name: math
+name: edp
 channels:
   - conda-forge
   - defaults
 dependencies:
   - python=3.9
   - numpy
-  - matplotlib
   - scipy
-  - ipython
-  - jupyter
   - mkl
   - sympy
+  - matplotlib
+  - pyamg
   - pip
   - pip:
-    # - cualquier-paquete-extra
+    - scikit-fem
+    - pygmsh
+    - meshio
