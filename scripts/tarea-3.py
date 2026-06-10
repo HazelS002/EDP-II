@@ -3,7 +3,7 @@ from heateq.conditions import *
 from heateq.utils import create_mesh
 from visualization import show_solution
 
-from ns_cylinder import solve_simulation
+from ns_cylinder import solve_simulation, visualize_simulation
 
 def ns_cylinder():
     T = 5.0
@@ -11,8 +11,9 @@ def ns_cylinder():
     mu = 0.001
     rho = 1
 
-    solve_simulation(T, num_steps, mu, rho,
-                     output_dir="navier_stokes_cylinder")
+    dir = "navier_stokes_cylinder"
+    solve_simulation(T, num_steps, mu, rho, output_dir=dir)
+    visualize_simulation(output_dir=dir)
     
 
 
