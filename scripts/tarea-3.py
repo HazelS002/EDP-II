@@ -1,41 +1,20 @@
 from heateq.findiffs import *
 from heateq.conditions import *
 from heateq.utils import create_mesh
+from visualization import show_solution
 
-from visualization.one_dimensional_time_eqs.complete_plot import show_solution
-
-from dolfinx import fem
-import ufl
-from ns_cylinder import *
-
+from ns_cylinder import solve_simulation
 
 def ns_cylinder():
-    # Parámetros
     T = 5.0
     num_steps = 5000
-    dt = T / num_steps
     mu = 0.001
-    rho = 1.0
+    rho = 1
 
-    # Generar malla
-    domain, facet_tags = create_mesh()
+    solve_simulation(T, num_steps, mu, rho,
+                     output_dir="navier_stokes_cylinder")
+    
 
-    # Espacios de funciones (Taylor-Hood P2-P1)
-    P2 = ufl.VectorElement("Lagrange", domain.ufl_cell(), 2)
-    P1 = ufl.FiniteElement("Lagrange", domain.ufl_cell(), 1)
-    V = fem.FunctionSpace(domain, P2)
-    Q = fem.FunctionSpace(domain, P1)
-
-    # Condiciones de contorno
-    bcu, bcp = define_boundary_conditions(domain, V, Q, facet_tags)
-
-    # Formas variacionales
-    forms, init_funcs = create_variational_forms(V, Q, dt, mu, rho)
-
-    # Bucle temporal
-    time_loop(domain, V, Q, bcu, bcp, forms, init_funcs, dt, num_steps,
-              output_dir="navier_stokes_cylinder")
-    return
 
 if __name__ == "__main__":
     # # Condiciones de dirichlet

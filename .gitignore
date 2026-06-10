@@ -2,3 +2,5 @@
 *.aux
 *.log
 *.out
+
+/navier_stokes_cylinder/

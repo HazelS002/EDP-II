@@ -4,11 +4,9 @@ channels:
   - defaults
 dependencies:
   - python=3.9
+  - fenics
+  - mshr
   - numpy
   - scipy
-  - mkl
   - sympy
   - matplotlib
-  - fenics-dolfinx   # 
-  - gmsh             # Alternativa a mshr
-  - pyvista          # Para visualización en Windows

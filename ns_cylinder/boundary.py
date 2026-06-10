@@ -1,45 +1,46 @@
-import numpy as np
-from dolfinx import fem, default_scalar_type
+from dolfin import SubDomain, near, DOLFIN_EPS
+from dolfin import DirichletBC, Constant, Expression
 
-def inflow_velocity_expression(x):
-    """Perfil de velocidad parabólico en la entrada."""
-    u_max = 1.5
-    return np.array([
-        4.0 * u_max * x[1] * (0.41 - x[1]) / (0.41**2),
-        np.zeros_like(x[0])
-    ])
+# Definición de fronteras (más precisa para el cilindro)
+class Inflow(SubDomain):
+    def inside(self, x, on_boundary):
+        return on_boundary and near(x[0], 0)
 
-def define_boundary_conditions(domain, V, Q, facet_tags):
-    """Define las condiciones de Dirichlet para velocidad y presión.
+class Outflow(SubDomain):
+    def inside(self, x, on_boundary):
+        return on_boundary and near(x[0], 2.2)
 
-    Args:
-        domain (Mesh): La malla.
-        V (FunctionSpace): Espacio para velocidad (vectorial).
-        Q (FunctionSpace): Espacio para presión (escalar).
-        facet_tags (MeshTags): Etiquetas de las fronteras (1:inflow, 2:outflow, 3:walls, 4:cylinder).
+class Walls(SubDomain):
+    def inside(self, x, on_boundary):
+        return on_boundary and (near(x[1], 0) or near(x[1], 0.41))
 
-    Returns:
-        bcu (list): Lista de condiciones de Dirichlet para velocidad.
-        bcp (list): Lista de condiciones de Dirichlet para presión.
-    """
-    # Velocidad de entrada
-    inflow_vel = fem.Function(V)
-    inflow_vel.interpolate(inflow_velocity_expression)
+class Cylinder(SubDomain):
+    def inside(self, x, on_boundary):
+        return on_boundary and ( (x[0]-0.2)**2 + (x[1]-0.2)**2 < 0.05**2 + DOLFIN_EPS)
 
-    # Localización de DOFs en las fronteras
-    inflow_dofs = fem.locate_dofs_topological(V, 1, facet_tags.find(1))
-    walls_dofs = fem.locate_dofs_topological(V, 1, facet_tags.find(3))
-    cylinder_dofs = fem.locate_dofs_topological(V, 1, facet_tags.find(4))
-    outflow_dofs_p = fem.locate_dofs_topological(Q, 1, facet_tags.find(2))
+def get_boundary_conditions(V, Q):
+    # Inicializar marcadores
+    inflow = Inflow()
+    outflow = Outflow()
+    walls = Walls()
+    cylinder = Cylinder()
 
-    zero_velocity = fem.Constant(domain, default_scalar_type((0.0, 0.0)))
-    zero_pressure = fem.Constant(domain, default_scalar_type(0.0))
+    # Perfil de velocidad de entrada
+    inflow_profile =\
+        Expression(('4.0*1.5*x[1]*(0.41 - x[1]) / pow(0.41, 2)', '0'), degree=2)
 
-    bcu = [
-        fem.dirichletbc(inflow_vel, inflow_dofs),
-        fem.dirichletbc(zero_velocity, walls_dofs),
-        fem.dirichletbc(zero_velocity, cylinder_dofs)
-    ]
-    bcp = [fem.dirichletbc(zero_pressure, outflow_dofs_p)]
+    # Condiciones de contorno
+    bcu_inflow = DirichletBC(V, inflow_profile, inflow)
+    bcu_walls = DirichletBC(V, Constant((0, 0)), walls)
+    bcu_cylinder = DirichletBC(V, Constant((0, 0)), cylinder)
+    bcp_outflow = DirichletBC(Q, Constant(0), outflow)
+
+    bcu = [bcu_inflow, bcu_walls, bcu_cylinder]
+    bcp = [bcp_outflow]
 
     return bcu, bcp
+
+
+__all__ = [
+    "Inflow", "Outflow", "Walls", "Cylinder", "get_boundary_conditions"
+]
