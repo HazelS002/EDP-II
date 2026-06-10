@@ -5,16 +5,17 @@ from dolfin import VectorFunctionSpace, FunctionSpace
 from dolfin import assemble, solve
 from dolfin import XDMFFile, File
 
+from .mesh import get_mesh
 from .boundary import get_boundary_conditions
 from .variational import assemble_forms
 from .config import mesh_resolution, save_every
-from .mesh import get_mesh
+from .config import ufilename, pfilename, meshfilename, default_output_dirname
 
 
-def solve_simulation(T, num_steps, mu, rho, output_dir = "navier_stokes_cylinder"):
+def solve_simulation(T, num_steps, mu, rho,
+                     output_dir = default_output_dirname):
     # Crear directorio para resultados
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    if not os.path.exists(output_dir): os.makedirs(output_dir)
 
     dt = T / num_steps
     mesh = get_mesh(mesh_resolution)
@@ -37,13 +38,13 @@ def solve_simulation(T, num_steps, mu, rho, output_dir = "navier_stokes_cylinder
     [ bc.apply(A1) for bc in bcu ]; [ bc.apply(A2) for bc in bcp]
 
     # Archivos de salida XDMF
-    xdmffile_u = XDMFFile(os.path.join(output_dir, "velocity.xdmf"))
-    xdmffile_p = XDMFFile(os.path.join(output_dir, "pressure.xdmf"))
+    xdmffile_u = XDMFFile(os.path.join(output_dir, ufilename))
+    xdmffile_p = XDMFFile(os.path.join(output_dir, pfilename))
     xdmffile_u.parameters["flush_output"] = True
     xdmffile_p.parameters["flush_output"] = True
 
     # Guardar malla
-    File(os.path.join(output_dir, "cylinder.xml.gz")) << mesh
+    File(os.path.join(output_dir, meshfilename)) << mesh
 
     # Bucle temporal
     t = 0
@@ -53,7 +54,7 @@ def solve_simulation(T, num_steps, mu, rho, output_dir = "navier_stokes_cylinder
         # Paso 1
         b1 = assemble(L1)
         [ bc.apply(b1) for bc in bcu ]
-        solve(A1, u_.vector(), b1, 'bicgstab', 'default')  # 'hypre_amg' si está disponible
+        solve(A1, u_.vector(), b1, 'bicgstab', 'default')
 
         # Paso 2
         b2 = assemble(L2)
