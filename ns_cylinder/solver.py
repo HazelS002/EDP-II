@@ -10,11 +10,11 @@ from .boundary import get_boundary_conditions
 from .variational import assemble_forms
 from .config import mesh_resolution, save_every
 from .config import ufilename, pfilename, useriesfilename, pseriesfilename,\
-    meshfilename, default_output_dirname
+    meshfilename, nsc_default_output_dirname
 
 
 def solve_simulation(T, num_steps, mu, rho,
-                     output_dir = default_output_dirname):
+                     output_dir = nsc_default_output_dirname):
     # Crear directorio para resultados
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 

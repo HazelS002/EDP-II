@@ -11,11 +11,11 @@ save_every = 10
 
 
 # file names
+nsc_default_output_dirname = "nsc_datasimulation/"
 
 ufilename = "velocity.xdmf"
 pfilename = "pressure.xdmf"
 meshfilename = "cylinder.xml.gz"    
-default_output_dirname = "navier_stokes_cylinder"
 
 useriesfilename = "velocity_series"
 pseriesfilename = "pressure_series"

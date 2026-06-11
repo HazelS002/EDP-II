@@ -3,4 +3,5 @@
 *.log
 *.out
 
-/navier_stokes_cylinder/
+/nsc_datasimulation/
+/rs_datasimulation/
