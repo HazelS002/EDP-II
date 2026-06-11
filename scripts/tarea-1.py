@@ -106,8 +106,7 @@ if __name__ == "__main__":
     """ Ejecuta los ejercicios de la tarea. Para cada ejercicio, se pueden
     ajustar los parámetros"""
 
-    from visualization.one_dimensional_time_eqs.complete_plot\
-        import show_solution
+    from visualization import show_solution
 
     ############################################################################
     #             PARAMETROS AJUSTABLES PARA LOS EJERCICIOS 
