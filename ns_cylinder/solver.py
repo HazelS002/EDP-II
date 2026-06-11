@@ -1,30 +1,16 @@
 from __future__ import print_function
-import os
 
-from dolfin import VectorFunctionSpace, FunctionSpace
-from dolfin import assemble, solve
-from dolfin import XDMFFile, File, TimeSeries
+from dolfin import assemble, solve, XDMFFile, TimeSeries
 
-from .mesh import get_mesh
 from .boundary import get_boundary_conditions
 from .variational import assemble_forms
-from .config import mesh_resolution, save_every
 from .config import ufilename, pfilename, useriesfilename, pseriesfilename,\
-    meshfilename, nsc_default_output_dirname
+    nsc_default_output_dirname, save_every
 
 
-def solve_simulation(T, num_steps, mu, rho,
+def solve_simulation(V, Q, mesh, T, num_steps, mu, rho,
                      output_dir = nsc_default_output_dirname):
-    # Crear directorio para resultados
-    if not os.path.exists(output_dir): os.makedirs(output_dir)
-
     dt = T / num_steps
-    mesh = get_mesh(mesh_resolution)
-
-
-    # Espacios de funciones
-    V = VectorFunctionSpace(mesh, 'P', 2)
-    Q = FunctionSpace(mesh, 'P', 1)
 
     bcu, bcp = get_boundary_conditions(V, Q)
 
@@ -39,18 +25,14 @@ def solve_simulation(T, num_steps, mu, rho,
     [ bc.apply(A1) for bc in bcu ]; [ bc.apply(A2) for bc in bcp]
 
     # Archivos de salida XDMF
-    xdmffile_u = XDMFFile(os.path.join(output_dir, ufilename))
-    xdmffile_p = XDMFFile(os.path.join(output_dir, pfilename))
+    xdmffile_u = XDMFFile(output_dir + ufilename)
+    xdmffile_p = XDMFFile(output_dir + pfilename)
     xdmffile_u.parameters["flush_output"] = True
     xdmffile_p.parameters["flush_output"] = True
 
     # Create time series (for use in reaction_system)
-    timeseries_u = TimeSeries(os.path.join(output_dir, useriesfilename))
-    timeseries_p = TimeSeries(os.path.join(output_dir, pseriesfilename))
-
-
-    # Guardar malla
-    File(os.path.join(output_dir, meshfilename)) << mesh
+    timeseries_u = TimeSeries(output_dir + useriesfilename)
+    timeseries_p = TimeSeries(output_dir + pseriesfilename)
 
     # Bucle temporal
     t = 0
