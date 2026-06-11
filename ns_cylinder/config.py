@@ -16,3 +16,6 @@ ufilename = "velocity.xdmf"
 pfilename = "pressure.xdmf"
 meshfilename = "cylinder.xml.gz"    
 default_output_dirname = "navier_stokes_cylinder"
+
+useriesfilename = "velocity_series"
+pseriesfilename = "pressure_series"

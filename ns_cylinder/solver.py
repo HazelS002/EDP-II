@@ -3,13 +3,14 @@ import os
 
 from dolfin import VectorFunctionSpace, FunctionSpace
 from dolfin import assemble, solve
-from dolfin import XDMFFile, File
+from dolfin import XDMFFile, File, TimeSeries
 
 from .mesh import get_mesh
 from .boundary import get_boundary_conditions
 from .variational import assemble_forms
 from .config import mesh_resolution, save_every
-from .config import ufilename, pfilename, meshfilename, default_output_dirname
+from .config import ufilename, pfilename, useriesfilename, pseriesfilename,\
+    meshfilename, default_output_dirname
 
 
 def solve_simulation(T, num_steps, mu, rho,
@@ -43,6 +44,11 @@ def solve_simulation(T, num_steps, mu, rho,
     xdmffile_u.parameters["flush_output"] = True
     xdmffile_p.parameters["flush_output"] = True
 
+    # Create time series (for use in reaction_system)
+    timeseries_u = TimeSeries(os.path.join(output_dir, useriesfilename))
+    timeseries_p = TimeSeries(os.path.join(output_dir, pseriesfilename))
+
+
     # Guardar malla
     File(os.path.join(output_dir, meshfilename)) << mesh
 
@@ -69,6 +75,10 @@ def solve_simulation(T, num_steps, mu, rho,
         if n % save_every == 0 or n == num_steps-1:
             xdmffile_u.write(u_, t)
             xdmffile_p.write(p_, t)
+
+            # Save nodal values to file
+            timeseries_u.store(u_.vector(), t)
+            timeseries_p.store(p_.vector(), t)
 
         # Actualizar soluciones anteriores
         u_n.assign(u_); p_n.assign(p_)
