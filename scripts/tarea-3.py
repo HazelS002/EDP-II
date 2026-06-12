@@ -62,27 +62,26 @@ def reaction_system():
 
 
 if __name__ == "__main__":
-    # Ecuacion de calor:
-    # Condiciones de dirichlet
-    A, u0 = dirichletCondition()
-    linear_frames = solveEq(A, u0)
-    X, T, U = create_mesh(linear_frames)
-    show_solution(X, T, U, "Heat Equation - Dirichlet Conditions")
+    # Ecuacion de calor: Condiciones de dirichlet
+    A, u0 = dirichletCondition()              # generar sistema
+    linear_frames = solveEq(A, u0)            # resolver sistema
+    X, T, U = create_mesh(linear_frames)      # formato para graficar
+    show_solution(X, T, U, "Heat Equation - Dirichlet Conditions")    # graficar
 
     
-    # Condiciones de Neumann
-    A, u0 = neumannCondition()
-    linear_frames = solveEq(A, u0)
-    X, T, U = create_mesh(linear_frames)
-    show_solution(X, T, U, "Heat Equation - Neumann Conditions")
+    # Ecuacion de calor: Condiciones de Neumann
+    A, u0 = neumannCondition()                # generar sistema
+    linear_frames = solveEq(A, u0)            # resolver sistema
+    X, T, U = create_mesh(linear_frames)      # formato para graficar
+    show_solution(X, T, U, "Heat Equation - Neumann Conditions")    # graficar
 
 
-    # Condiciones periodicas
-    A, u0 = periodicCondition()
-    linear_frames = solvePeriodicEq(A, u0)
-    X, T, U = create_mesh(linear_frames)
-    show_solution(X, T, U, "Heat Equation - Periodic Conditions")
+    # Ecuacion de calor: Condiciones periodicas
+    A, u0 = periodicCondition()               # generar sistema
+    linear_frames = solvePeriodicEq(A, u0)    # resolver sistema
+    X, T, U = create_mesh(linear_frames)      # formato para graficar 
+    show_solution(X, T, U, "Heat Equation - Periodic Conditions")    # graficar
 
-    # Ejercicio 2
-    ns_cylinder()
-    reaction_system()
+    # Ejercicio 2 (mas info en: Solvin PDEs in Python - The FEniCS Tutorial I)
+    ns_cylinder()       # realiza calculos y simulación
+    reaction_system()   # solo realiza calculos

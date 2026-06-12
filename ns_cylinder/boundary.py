@@ -25,7 +25,7 @@ def get_boundary_conditions(V, Q):
     walls = Walls()
     cylinder = Cylinder()
 
-    # Perfil de velocidad de entrada
+    # velocidad de entrada
     inflow_profile =\
         Expression(('4.0*1.5*x[1]*(0.41 - x[1]) / pow(0.41, 2)', '0'), degree=2)
 

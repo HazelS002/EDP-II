@@ -1,0 +1,158 @@
+\documentclass[12pt]{article}
+
+\usepackage{latexsym}
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc} 
+\usepackage[spanish]{babel}
+\usepackage{amsthm, amssymb, amsmath, amsfonts, bbm, mathtools} 
+\usepackage{multirow, array}
+\usepackage{stmaryrd}
+\usepackage{xcolor}
+\decimalpoint
+
+\usepackage{wrapfig}
+\usepackage{subcaption}
+
+% no tocar nada de aqui
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumerate} 
+\usepackage{graphicx}
+
+% entornos personalizados
+\newtheorem{example}{Ejemplo}
+\newtheorem{notacion}{Notación}
+\newtheorem{defi}{Definición}
+\newtheorem{obse}{Observación}
+\newtheorem{lem}{Lema}
+
+\newcommand{\sol}{\textit{Solución. }}
+\renewcommand{\qed}{\hfill $\blacksquare$}
+\newcommand{\eej}{\hfill $\square$}
+
+%--------------------- Comandos personalizados ---------------------
+
+% Simbolos de los Numeros
+\newcommand{\D}{\mathfrak{D}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Signos de agrupacion
+\newcommand{\pp}[1]{\left( #1 \right)}
+\newcommand{\cc}[1]{\left[ #1 \right]}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\ind}[1]{\mathbbm{1}_{\{#1\}}}
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+
+\newcommand{\Text}[1]{\quad\text{#1}\quad}
+
+\newcommand{\bs}{\backslash}
+\renewcommand{\c}{\complement}
+\newcommand{\beq}{bilipschitz }
+
+% Flechas
+\newcommand{\imp}{\Longrightarrow}
+\newcommand{\Imp}{\quad\Longrightarrow\quad}
+\newcommand{\ssi}{\Longleftrightarrow}
+\newcommand{\Ssi}{\quad\Longleftrightarrow\quad}
+
+
+\newcommand{\e}{\varepsilon}
+\renewcommand{\d}{\delta}
+\renewcommand{\O}{\Omega}
+\renewcommand{\l}{\lambda}
+\renewcommand{\a}{\alpha}
+\renewcommand{\b}{\beta}
+\renewcommand{\abs}[1]{\left\lvert#1\right\rvert}
+%\renewcommand{\qedsymbol}{$\blacksquare$}
+
+
+\newcommand{\Co}{\mathfrak C}
+\newcommand{\T}{\mathbb T}
+%\newcommand{\uno}{\mathbb 1}
+%\newcommand{\ind}[1]{\mathbbm{1}_{\{#1\}}}
+\newcommand{\uno}{\mathbbm{1}}
+
+
+\renewcommand{\o}{\omega}
+
+\newcommand{\x}{\mathrm x}
+\newcommand{\y}{\mathrm y}
+\newcommand{\Int}{\mathrm{int}}
+\newcommand{\Ext}{\mathrm{ext}}
+\newcommand{\diam}{\mathrm{diam}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\angles}[2]{\left\langle #1, #2\right\rangle}
+
+\textheight=25cm \textwidth=18cm \topmargin=-2cm \oddsidemargin=-1cm
+
+\setlength{\parskip}{0.8em}  % Espaciado párrafos
+\setlength{\parindent}{0pt}  % Sangría
+
+\newcommand{\To}{\to}
+
+
+
+\begin{document}
+    \pagestyle{empty}
+    \begin{center}
+        {\textsc{Ecuaciones Diferenciales Parciales II} \\
+        \medskip 
+        \large{Tarea 3}}
+    \end{center}
+    
+    \bigskip
+    
+    \begin{enumerate}
+        \item Resolver en Python por el método de Diferencias finitas los
+        siguientes ejercicios, de preferencia métodos implíctos:
+        \begin{itemize}
+            \item Ecuación con condiciones de Dirichlet,
+            \begin{align*}
+                \frac{\partial u}{\partial t} &= 1
+                *\frac{\partial^2u}{\partial x^2},\\
+                x\in (0,1),&\quad 0,2\geq t > 0,\\
+                u(x,0) &= 4x+4x^2,\quad x\in[0,1],\\
+                U(0, t) &= 0,\quad 0,2 \geq t \geq 0,\\
+                U(1, t) &= 0,\quad 0,2 \geq t \geq 0.
+            \end{align*}
+
+            \item Ecuación con condiciones de Neumann,
+            \begin{align*}
+                \frac{\partial u}{\partial t} &= 1
+                *\frac{\partial^2u}{\partial x^2},\\
+                x\in (0,1),&\quad 0,2\geq t > 0,\\
+                u(x,0) &= 4x+4x^2,\quad x\in[0,1],\\
+                U_x(0, t) &= 0,\quad 0,2 \geq t \geq 0,\\
+                U_x(1, t) &= 0,\quad 0,2 \geq t \geq 0.
+            \end{align*}
+
+            \item Ecuación con condiciones de frontera periódicas,
+            \begin{align*}
+                \frac{\partial u}{\partial t} &= 1
+                *\frac{\partial^2u}{\partial x^2},\\
+                x\in (0,1),&\quad 0,15\geq t > 0,\\
+                u(x,0) &= 4x+4x^2,\quad x\in[0,1],\\
+                U(0, t) &= u(1,t),\quad 0,15 \geq t \geq 0,\\
+                U_x(0, t) &= u_x(1,t),\quad 0,15 \geq t \geq 0.
+            \end{align*}
+        \end{itemize}
+        
+    \item Del libro Solving PDEs in Python: The Fenics Tutorial 1, elije dos
+    ejemplos y reprodúcelos, explica el procedimiento, puedes modificar los
+    ejemplos si consideras adecuado, como la malla, constantes, etc.
+    \end{enumerate}
+
+    \sol Solicones implementadas
+    \href{https://github.com/HazelS002/EDP-II/tree/main}{Aquí}\eej
+\end{document}

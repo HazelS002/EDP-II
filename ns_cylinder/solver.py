@@ -10,12 +10,13 @@ from .config import ufilename, pfilename, useriesfilename, pseriesfilename,\
 
 def solve_simulation(V, Q, mesh, T, num_steps, mu, rho,
                      output_dir = nsc_default_output_dirname):
-    dt = T / num_steps
+    dt = T / num_steps    # tamaño de paso
 
+    # definir las condiciones de frontera para velocidad y presion
     bcu, bcp = get_boundary_conditions(V, Q)
 
     # Obtener formas débiles
-    (a1, L1), (a2, L2), (a3, L3), (u, v), (p, q), (u_n, u_), (p_n, p_) =\
+    (a1, L1), (a2, L2), (a3, L3), _, _, (u_n, u_), (p_n, p_) =\
         assemble_forms(V, Q, dt, mu, rho, mesh)
 
     # Ensamblaje de matrices (independientes del tiempo)
@@ -30,7 +31,7 @@ def solve_simulation(V, Q, mesh, T, num_steps, mu, rho,
     xdmffile_u.parameters["flush_output"] = True
     xdmffile_p.parameters["flush_output"] = True
 
-    # Create time series (for use in reaction_system)
+    # Crear TimeSeries (para usar en reaction_system)
     timeseries_u = TimeSeries(output_dir + useriesfilename)
     timeseries_p = TimeSeries(output_dir + pseriesfilename)
 
@@ -39,6 +40,7 @@ def solve_simulation(V, Q, mesh, T, num_steps, mu, rho,
     for n in range(num_steps):
         t += dt
 
+        # volver a aplicar pasos para cada instante
         # Paso 1
         b1 = assemble(L1)
         [ bc.apply(b1) for bc in bcu ]
@@ -62,10 +64,9 @@ def solve_simulation(V, Q, mesh, T, num_steps, mu, rho,
             timeseries_u.store(u_.vector(), t)
             timeseries_p.store(p_.vector(), t)
 
-        # Actualizar soluciones anteriores
-        u_n.assign(u_); p_n.assign(p_)
+        u_n.assign(u_); p_n.assign(p_)    # Actualizar soluciones anteriores
 
         # Mostrar progreso y velocidad máxima cada 100 pasos
-        print(f"Step {n}/{num_steps}, t = {t:.3f} s, |u|_max = {u_.vector().norm('linf'):.4f}")
+        print(f"Step {n}/{num_steps}, t={t:.3f}s, |u|_max = {u_.vector().norm('linf'):.4f}")
 
     print(f"Data simulation saved in: {output_dir}")
