@@ -17,5 +17,5 @@ ufilename = "velocity.xdmf"
 pfilename = "pressure.xdmf"
 meshfilename = "cylinder.xml.gz"    
 
-useriesfilename = "velocity_series.h5"
-pseriesfilename = "pressure_series.h5"
+useriesfilename = "velocity_series"
+pseriesfilename = "pressure_series"
