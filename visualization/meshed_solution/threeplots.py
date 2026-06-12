@@ -1,5 +1,5 @@
-from ..utils.builders import create_2d_plot, create_3d_plot, create_animation
-from ..config import FIG_KWARGS
+from .utils.builders import create_2d_plot, create_3d_plot, create_animation
+from .config import FIG_KWARGS
 from matplotlib import pyplot as plt
 
 def show_solution(X, T, U, title='Solucion', cmap='viridis'):
