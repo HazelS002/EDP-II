@@ -33,13 +33,23 @@ EDP-II
 │   │   └───figures
 │   └───tarea-2
 │       └───figures
-|
+│
+├───heateq
+│   ├───conditions
+│   ├───findiffs
+│   └───utils
+│
+├───ns_cylinder
+│
+├───reaction_system
+│
 ├───scripts
 |
 └───visualization
-    ├───one_dimensional_time_eqs
-    ├───two_dimensional_time_eqs
-    └───utils
+    ├───fe_solution
+    │   └───utils
+    └───meshed_solution
+        └───utils
 ```
 
 ## Instalación y Configuración
@@ -54,13 +64,16 @@ cd EDP-II
 conda env create -f environment.yml
 
 # Activar entorno de Conda
-conda activate math
+conda activate edp
 ```
 
 ### Dependencias
 - **NumPy**: Cálculos numéricos y operaciones con arrays de imágenes
 - **Matplotlib**: Visualización
 - **scipy**: Funciones matemáticas avanzadas
+- **sympy**: Calculo simbólico
+- **fenics**: Para elemento finito 
+- **mshr**: Mallas para elemento finito
 
 ## Ejecución
 ### Generar PDF (requiere pdflatex)
@@ -68,11 +81,11 @@ conda activate math
 Para compilar el archivo _tex_ a _pdf_ de la tarea $n$:
 ```bash
 cd "reports/tarea-<n>/"
-pdflatex main.tex
+pdflatex main.tex    # (requiere pdflatex)
 ```
 
 ### Ejecutar scripts de Python
 Para ejecutar el script de la tarea $n$:
 ```bash
-python -m scripts.tarea-<n>    # (requiere pdflatex)
+python -m scripts.tarea-<n>
 ```
